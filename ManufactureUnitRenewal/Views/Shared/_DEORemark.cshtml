@@ -1,0 +1,480 @@
+﻿@model IEMS_WEB.Areas.ManufactureUnitRenewal.Model.Request.ListManufacturingUnitRenewalSaveModel
+@{
+    ViewBag.Title = "AEO Remark";
+
+}
+
+@Html.HiddenFor(model => model.DeoRemark.InsepectionsJson, new { @id = "hdnJsonDeoInsepections", @class = "form-control deo" })
+@Html.HiddenFor(model => model.DeoRemark.PendingDuesJson, new { @id = "hdnJsonDeoPendingDues", @class = "form-control deo" })
+@Html.HiddenFor(m => m.DeoRemark.CheckBoxJson, new { @id = "hdnJsonCheckBoxByDeo", @class = "hid deo" })
+<br />
+<div class="page-title">
+    <div class="row">
+        <div class="col-12">
+            <h3>
+                <span data-translate=""> DEO Details</span>
+            </h3>
+        </div>
+    </div>
+</div>
+@* <div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Total Insepections of unit during the year</label>
+            <br />
+
+                @Html.TextBoxFor(model => model.DeoRemark.TotalInsepections, new { @class = "form-control deo",@readonly=true })
+            <span class="text-danger validation-message" id="eDeoTotalInsepections"></span>
+        </div>
+    </div>
+
+</div> *@
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Details of Inspections</label>
+        </div>
+    </div>
+
+</div>
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Date of Inspections</label>
+            <br />
+
+                @Html.TextBoxFor(model => model.DeoRemark.DateOfInsepections, new { @class = "form-control deo" })
+            <span class="text-danger validation-message" id="eDeoDateOfInsepections"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Details of Discrepancy found and action taken</label>
+            <br />
+
+                @Html.TextAreaFor(model => model.DeoRemark.DetailsOFDiscrepancy, new { @class = "form-control deo" })
+            <span class="text-danger validation-message" id="eDeoDetailsOFDiscrepancy"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Total Inspections of unit during the year</label>
+            <br />
+
+            @Html.TextBoxFor(model => model.DeoRemark.TotalInsepections, new { @class = "form-control numbers deo", @readonly = true })
+            <span class="text-danger validation-message" id="eDeoTotalInsepections"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="col-md-3">
+            <div class="form-group">
+                <button type="button" class="btn btn-success pull-right" id="btnAddDeoInsepections" data-translate="Add" data-original-title="" title="">Add</button>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <table id="grdDeoInsepections" class="table display table-bordered dataTable no-footer dtr-inline">
+            <thead>
+                <tr style="text-align: center;">
+                    <th style="text-align: center" data-translate="SR.">SR.</th>
+
+                    <th style="text-align: center" data-translate="Date of Inspections">Date of Inspections</th>
+                    <th style="text-align: center" data-translate="Details">Details</th>
+                    <th style="text-align: center" data-translate="Action">Action</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+@* 
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">No of Pending Dues(in RS.)</label>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">YEAR</label>
+
+            <br />
+
+                @Html.DropDownListFor(model => model.DeoRemark.PendingYearId, Model.DeoRemark.lstYears, new { @class = "dropdown form-control deo" })
+            <span class="text-danger validation-message" id="eDeoPendingYearId"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">PENDING AMOUNT</label>
+
+            <br />
+
+                @Html.TextBoxFor(model => model.DeoRemark.PendingAmount, new { @class = "form-control deo" })
+            <span class="text-danger validation-message" id="eDeoPendingAmount"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="col-md-3">
+            <div class="form-group">
+                    <button type="button" class="btn btn-success pull-right" id="btnAddDeoDues" data-translate="Add" data-original-title="" title="">Add</button>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <table id="grdDeoPendingDues" class="table display table-bordered dataTable no-footer dtr-inline">
+            <thead>
+                <tr style="text-align: center;">
+                    <th style="text-align: center" data-translate="SR.">SR.</th>
+
+                    <th style="text-align: center" data-translate="YEAR">YEAR</th>
+                    <th style="text-align: center" data-translate="PENDING AMOUNT">PENDING AMOUNT</th>
+
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <br />
+            <label class="form-label mandatory" data-translate="">No of Pending Court Case</label>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">(No. of) Cases</label>
+
+            <br />
+                @Html.TextBoxFor(model => model.DeoRemark.NoOfCases, new { @class = "form-control deo" })
+            <span class="text-danger validation-message" id="eDeoNoOfCases"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Remarks</label>
+
+            <br />
+
+                @Html.TextAreaFor(model => model.DeoRemark.RemarkOfCases, new { @class = "form-control deo" })
+            <span class="text-danger validation-message" id="eDeoRemarkOfCases"></span>
+        </div>
+    </div>
+</div>
+ *@
+
+<div class="form-horizontal">
+    <h4>Select Details</h4>
+    @for (int i = 2; i < Model.manufacturingUnitModel.CheckBoxItems.Count(); i++)
+    {
+        @Html.CheckBoxFor(m => m.manufacturingUnitModel.CheckBoxItems[i].Selected, new { @class = "flat deo", @Id = "check_" + i })
+
+        @Model.manufacturingUnitModel.CheckBoxItems[i].Text
+        @Html.HiddenFor(m => m.manufacturingUnitModel.CheckBoxItems[i].Text)
+
+        @Html.HiddenFor(m => m.manufacturingUnitModel.CheckBoxItems[i].Value)
+        <br />
+    }
+
+
+
+</div>
+<br />
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Remarks based on online application of unit and above information for renewal</label>
+            <br />
+
+            @Html.TextAreaFor(model => model.DeoRemark.RemarksBasedOnApplication, new { @class = "form-control deo" })
+            <span class="text-danger validation-message" id="eDeoRemarksBasedOnApplication"></span>
+        </div>
+    </div>
+</div>
+<div class="text-center">
+    <button type="button" id="btnSubmitDeo" value="Save" class="btn btn-success">Save Draft</button>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#DeoRemark_DateOfInsepections').datepicker({
+            dateFormat: "dd-M-yy",
+            minDate: "01-apr-2023"
+
+        });
+        // $('#DeoRemark_PendingYear').datepicker({
+        //     dateFormat: "dd-M-yy",
+
+        // });
+        
+
+        $('#btnAddDeoInsepections').click(function () {
+
+            var DateOfInsepections = $('#DeoRemark_DateOfInsepections').val();
+            var DetailsOFDiscrepancy = $('#DeoRemark_DetailsOFDiscrepancy').val();
+
+            if (DateOfInsepections == "") {
+                $('#eDeoDateOfInsepections').text("Choose Date Of Inspections");
+                return false;
+            }
+            else {
+                $('#eDeoDateOfInsepections').text("");
+            }
+
+            if (DetailsOFDiscrepancy == "") {
+                $('#eDeoDetailsOFDiscrepancy').text("Fill Details");
+                return false;
+            }
+            else {
+                $('#eDeoDetailsOFDiscrepancy').text("");
+            }
+
+            var data = $('#grdDeoInsepections tbody').find('tr:last-child').find('td:first-child').text();
+            // Initialize a new object for the row data
+            if (data == "No data available in table") {
+                data = 0;
+            }
+            var newRowData = {
+                "slno": parseInt(data) + 1, // Increment the slno for the new row
+                "DateOfInsepections": DateOfInsepections,
+                "DetailsOFDiscrepancy": DetailsOFDiscrepancy,
+
+            };
+            //for restrict duplicate row
+            var isAlreadyExist = false;
+            for (var i = 1; i <= parseInt(data); i++) {
+                var DateOfInsepection = $('#' + 'DateOfInsepections_' + i).text();
+                if (DateOfInsepection != "" && DateOfInsepection != undefined) {
+                    if (DateOfInsepection == DateOfInsepections) {
+                        isAlreadyExist = true;
+                    }
+                }
+
+            }
+            if (isAlreadyExist) {
+                $('#eDeoDateOfInsepections').text('This date already added');
+            }
+            else {
+                tableInsepections.row.add(newRowData).draw();
+                $('#DeoRemark_TotalInsepections').val(parseInt(data) + 1);
+            }
+            
+        });
+        var tableInsepections = $('#grdDeoInsepections').DataTable({
+
+            "columns": [
+                { "data": "slno", "autoWidth": true, "sortable": false },
+                {
+                    "data": "DateOfInsepections", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'DateOfInsepections_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "DetailsOFDiscrepancy", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'DetailsOFDiscrepancy_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "addremovebutton", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = row.slno;
+                        return "<button class='removeRow btn btn-danger' data-id='" + uniqueId + "'>Remove</button>";
+                    }
+                }
+
+            ],
+            "columnDefs": [
+                { "targets": [0], "render": function (data, type, row, meta) { return meta.row + 1; } }
+            ],
+            "order": [[0, "asc"]],
+            "responsive": false,
+
+        });
+        $('#grdDeoInsepections tbody').on('click', 'button.removeRow', function (e) {
+            e.preventDefault();
+            var rowsCount = tableInsepections.rows().count();
+            var index = $(this).closest("tr").index();
+            if (rowsCount > 0) {
+                tableInsepections.row(parseInt(index)).remove().draw();
+            }
+            var rowsCount = tableInsepections.rows().count();
+            if (rowsCount == 0) {
+
+                $('#hdnJsonDeoInsepections').val("");
+            }
+
+        });
+        
+        $('#btnSubmitDeo').click(function () {
+            var TotalInsepections = $('#DeoRemark_TotalInsepections').val();
+            //var ActionDetailAgainstUnit = $('#DeoRemark_ActionDetailAgainstUnit').val();
+            var RemarksBasedOnApplication = $('#DeoRemark_RemarksBasedOnApplication').val();
+
+
+            // if (TotalInsepections == "0") {
+            //     $('#eDeoTotalInsepections').text("Fill total inspections");
+            //     return false;
+            // }
+            // else {
+            //     $('#eDeoTotalInsepections').text("");
+            // }
+            debugger
+            var InsepectionsJson = SaveInsepectionsJsonDeo();
+            if (InsepectionsJson) {
+                
+            }
+            else {
+                $('#eDeoDateOfInsepections').text("Fill date and details");
+                return false;
+            }
+            if (RemarksBasedOnApplication == "") {
+                $('#eDeoRemarksBasedOnApplication').text("Fill Remarks Based On Application");
+
+                return false;
+            }
+            else {
+                $('#eDeoRemarksBasedOnApplication').text("");
+            }
+            
+            //SavePendingDuesJson();
+            GetSelectedCheckBoxListByDeo();
+            tmp = {
+                'RequestId': parseInt($("#hdnTransactionId").val()),
+                'TotalInsepections': parseInt(TotalInsepections),
+                // 'NoOfCases': parseInt($("#DeoRemark_NoOfCases").val()),
+                // 'RemarkOfCases': $("#DeoRemark_RemarkOfCases").val(),
+                'RemarksBasedOnApplication': RemarksBasedOnApplication,
+                'InsepectionsJson': $("#hdnJsonDeoInsepections").val(),
+                'CheckBoxJson': $("#hdnJsonCheckBoxByDeo").val()
+            }
+            
+            debugger
+
+            $.ajax({
+                type: "POST",
+                url: "../ManufactureUnitRenewal/DEODetailSave",
+                data: { model: tmp },
+                async: false,
+                dataType: 'json',
+                success: function (data) {
+                    debugger
+                    if (data.ResponseModel > 0) {
+
+                        $('#btnAction').removeAttr('disabled');
+                        $('#btnSubmitDeo').attr('disabled', 'disabled');
+                    }
+                    else {
+                        $('#btnAction').attr('disabled', 'disabled');
+                        $('#btnSubmitDeo').removeAttr('disabled');
+                    }
+                }
+            });
+        });
+
+
+    });
+
+    function GetSelectedCheckBoxListByDeo() {
+        //manufacturingUnitModel_CheckBoxItems_4__Selected
+        debugger
+        var arr = [];
+        var JsonDetails = "";
+        var count = '@Model.manufacturingUnitModel.CheckBoxItems.Count()';
+        for (var i = 1; i <= count; i++) {
+            debugger
+            var isChecked = $('#check_' + i).is(":checked");
+            if (isChecked) {
+                var Details = {
+                    'slno': $('#manufacturingUnitModel_CheckBoxItems_' + i + '__Value').val(),
+
+                };
+                arr.push(Details);
+            }
+
+        }
+        JsonDetails += JSON.stringify(arr);
+        $('#hdnJsonCheckBoxByDeo').val(JsonDetails);
+    }
+    function SaveInsepectionsJsonDeo() {
+
+
+        var JsonDetails = "";
+        var isValid = true;
+        var arr = [];
+        $('#grdDeoInsepections tbody tr').each(function (index, row) {
+            var rowId = $(row).find('td:first-child').text(); // Assuming the first column contains the slno
+            if (rowId == "No data available in table" || rowId == "") {
+                data = 0;
+            }
+            else {
+                var Details = {
+                    'slno': rowId,
+
+                    'DateOfInsepections': $('#' + 'DateOfInsepections_' + rowId).text(),
+                    'DetailsOFDiscrepancy': $('#' + 'DetailsOFDiscrepancy_' + rowId).text(),
+
+                };
+                arr.push(Details);
+            }
+        });
+        JsonDetails += JSON.stringify(arr);
+        $('#hdnJsonDeoInsepections').val(JsonDetails);
+
+        if (isValid && $('#hdnJsonDeoInsepections').val() !== "" && $('#hdnJsonDeoInsepections').val() !== "[]") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    // function SavePendingDuesJson() {
+
+
+    //     var JsonDetails = "";
+    //     var isValid = true;
+    //     var arr = [];
+    //     $('#grdDeoPendingDues tbody tr').each(function (index, row) {
+    //         var rowId = $(row).find('td:first-child').text(); // Assuming the first column contains the slno
+    //         var Details = {
+    //             'slno': rowId,
+
+    //             //'PendingYearId': $('#' + 'PendingYearId_' + rowId).text(),
+    //             'PendingYear': $('#' + 'PendingYear_' + rowId).text(),
+    //             'PendingAmount': $('#' + 'PendingAmount_' + rowId).text(),
+
+    //         };
+    //         arr.push(Details);
+
+    //     });
+    //     debugger
+    //     JsonDetails += JSON.stringify(arr);
+    //     $('#hdnJsonDeoPendingDues').val(JsonDetails);
+
+    //     if (isValid && $('#hdnJsonDeoPendingDues').val() !== "") {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
+
+</script>

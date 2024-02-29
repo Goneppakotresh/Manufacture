@@ -1,0 +1,167 @@
+﻿@model IEMS_WEB.Areas.Manufacturer.Models.ManufacturingRenewalRequestParameter
+
+@{
+    //ViewBag.Title = "ManufacturingRenewalView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/assets/js/translator/manufacturingrenewalview.js"></script>
+<style>
+    table#grdManufacturingRenewalView thead tr th:last-child {
+        font-weight: 600 !important;
+        color: #000 !important;
+    }
+
+</style>
+
+<div class="page-title">
+    <div class="row">
+        <div class="col-12">
+            <h3><span data-translate="Manufacturing Unit Renewal Details">Manufacturing Unit Renewal Details</span> <button type="button" data-translate="New" class="btn btn-success pull-right" id="btnNew">New</button></h3>
+        </div>
+    </div>
+</div>
+
+
+<body>
+    <div class="main-content">
+        @using (Html.BeginForm())
+        {
+            <input type="text" style="visibility:hidden" id="txtStatusType">
+
+            <div id="tabs">
+
+
+                <ul class="nav nav-tabs padding-18 tab-size-bigger" id="myTab">
+                    <li class="ui-tabs-tab ui-corner-top ui-state-default ui-tab active" id="TabPending">
+                        <a data-toggle="tab" href="#Tab1" data-target="draft" onclick="TabPaneChange(0)">
+                            <i class="orange ace-icon fa fa-clock-o bigger-130">  <span class="bigger-110" data-translate="Pending">Pending</span></i>
+
+                        </a>
+                    </li>
+                    <li class="">
+                        <a data-toggle="tab" href="#Tab1" data-target="draft" onclick="TabPaneChange(1)">
+                            <i class="green ace-icon fa fa-check-square-o bigger-130">  <span class="bigger-110" data-translate="Approved">Approved</span></i>
+
+                        </a>
+                    </li>
+                    <li id="TabAll">
+                        <a data-toggle="tab" href="#Tab1" data-target="inbox" onclick="TabPaneChange(2)">
+                            <i class="blue ace-icon fa fa-inbox bigger-130">  <span class="bigger-110" data-translate="All"> All </span></i>
+
+                        </a>
+                    </li>
+
+                </ul>
+                <br />
+                <div id="tabs-1">
+                    <br />
+                    <table id="grdManufacturingRenewalView" style="width:100%" class="table display table-boardered">
+                        <thead>
+                            <tr style="text-align: center;">
+                                @* <th style="text-align: center"></th> *@
+                                <th style="text-align: center" data-translate="Fin Year">Fin Year</th>
+                                <th style="text-align: center" data-translate="Unit Name">Unit Name</th>
+                                <th style="text-align: center" data-translate="Licesee Type">Licesee Type</th>
+                                <th style="text-align: center" data-translate="Status">Status</th>
+                                <th style="text-align: center" data-translate="View">View</th>
+                                
+                                
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+                <div id="tabs-2">
+                </div>
+                <div id="tabs-3">
+                </div>
+            </div>
+
+
+        }
+    </div>
+</body>
+
+
+<script type="text/javascript">
+    //
+    $(document).ready(function () {
+        $("#tabs").tabs();
+        $('#btnNew').click(function () {
+            ViewDetailsNew(0, 'create');
+        });
+        $('#grdManufacturingRenewalView').DataTable().destroy();
+        $('#grdManufacturingRenewalView').DataTable({
+            "ajax": {
+                "url": "../ManufactureUnitRenewal/GetManufacturingRenewalRequests",
+                "type": "GET",
+                "datatype": "json",
+                data: function (d) {
+                    
+                    d.status = $("#txtStatusType").val();
+                }
+            },
+            //"order": [[2, 'desc'], [4, 'asc'], [5, 'asc']],
+            "columns": [
+                { "data": "FinYear", "autoWidth": true },
+                { "data": "UnitName", "autoWidth": true},
+                { "data": "LiceseeType", "autoWidth": true },
+
+                
+               
+                { "data": "Status", "autoWidth": true },
+                {
+                    "data": "RenewalRequestId", "autoWidth": true, "sortable": false, "render": function (data, type, row) {
+                        return '<a title = "Click here to View"  href = "javascript:ViewDetails(\'' + row.RequestId + '\',\'' + "view" + '\')" > <i class="fa fa-eye"></i></a> ';
+
+                    }
+                },
+
+
+            ],
+            responsive: true
+        });
+    });
+
+
+    function ViewDetails(PkId, action) {
+        debugger
+        $.ajax({
+            url: '@Url.Action("ViewDetails", "ManufactureUnitRenewal")',
+            type: "GET",
+            data: { PkId: PkId, actionName: action },
+            async: false,
+            success: function (data) {
+                
+                window.location.href = "../ManufactureUnitRenewal/UnitRenewalView";
+            },
+            error: function (result) {
+                alert("Error");
+            }
+        });
+
+    }
+    function ViewDetailsNew(PkId, action) {
+
+        $.ajax({
+            url: '@Url.Action("ViewDetails", "ManufactureUnitRenewal")',
+            type: "GET",
+            data: { PkId: PkId, actionName: action },
+            async: false,
+            success: function (data) {
+
+                window.location.href = "../ManufactureUnitRenewal/ManufactureUnitRenewal";
+            },
+            error: function (result) {
+                alert("Error");
+            }
+        });
+
+    }
+    function TabPaneChange(_Type) {
+        $("#txtStatusType").val(_Type);
+        $('#grdManufacturingRenewalView').DataTable().ajax.reload();
+    }
+
+</script>
+
+

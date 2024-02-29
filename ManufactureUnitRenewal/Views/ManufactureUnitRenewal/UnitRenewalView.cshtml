@@ -1,0 +1,441 @@
+﻿@model IEMS_WEB.Areas.ManufactureUnitRenewal.Model.Request.ListManufacturingUnitRenewalSaveModel
+@{
+    ViewData["Title"] = "ManufactureUnitRenewal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<body>
+
+    @using (Html.BeginForm())
+    {
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="Manufacturing Unit Renewal">Manufacturing Unit Renewal</span>
+                        <button type="button" class="btn btn-primary pull-right" data-translate="Back" id="btnBack"> Back</button>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    
+                    <span data-translate="">Financial Year of Renewed License</span>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.FinanceYearName, new {@readonly="readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Name Of Main Unit</label>
+                    @Html.TextAreaFor(model => model.manufacturingUnitModel.MainUnitName, new {@readonly="readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Unit Type</label>
+                    @Html.TextAreaFor(model => model.manufacturingUnitModel.UnitTypeName, new {@readonly="readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Name Of Unit </label>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.UnitName, new {@readonly="readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Address Of Unit </label>
+                    @Html.TextAreaFor(model => model.manufacturingUnitModel.AddressOfUnit, new {@readonly="readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="Rule Under Which License Has Been Issued To Unit">Rule Under Which License Has Been Issued To Unit</span>
+                        
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+
+                    <span data-translate="">Type Of Licensee </span>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.LicenceTypeName, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Rule</label>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.LicenceRuleName, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Date of Establishment Of Plant </label>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.EstablishmentOfPantDate, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Date of Commencement of Production  </label>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.CommencementOfProductionDate, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+           
+        </div>
+
+
+
+
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="">Fee Details (In Rs.)</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @* <label class="form-label " data-translate="">Production Type</label> *@
+                    <br />
+
+                    @if (@Model.FeeRequest != null)
+                    {
+                        <table class="table table-bordered table-responsive table-hover">
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>GRN</th>
+                                <th>GRN Date</th>
+                                <th>Total Amount</th>
+                            </tr>
+                            @foreach (var item in Model.FeeRequest)
+                            {
+
+                                <tr>
+                                    <td> @Html.DisplayFor(m => item.FeeType) </td>
+                                    <td> @Html.DisplayFor(m => item.GRN) </td>
+                                    <td>@Html.DisplayFor(m => item.GRNDate)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                                </tr>
+
+
+
+                            }
+                        </table>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>
+                            <span data-translate="">Production Capacity</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Production Type</label>
+                    <br />
+
+                    @if (@Model.productionCapacity.lstprod != null)
+                    {
+                        <table class="table table-bordered table-responsive table-hover">
+                            <tr>
+                                <th>Product Type</th>
+                                <th>Product Group Name</th>
+                                <th>In BL</th>
+                                <th>In Case</th>
+    </tr>  
+                        @foreach (var item in @Model.productionCapacity.lstprod)
+                        {
+       
+                                <tr>
+                                    <td> @Html.DisplayFor(m=>item.ProductTypeName) </td>
+                                    <td> @Html.DisplayFor(m=>item.ProductGroupName) </td>
+                                    <td>@Html.DisplayFor(m=>item.ClInBl)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.ImflAndClInCases)</td>
+                                </tr>
+                   
+
+
+                        }
+                        </table>
+                    }
+                    
+                  
+                </div>
+            </div>
+        </div>
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>
+                        <span data-translate="">Production Capacity Rajasthan Pollution Control Board</span>
+                        </h3>
+                    </div>
+                </div>
+        </div>
+        <div class="row">
+                    <div class="col-md-12">
+                                <div class="form-group">
+                                  
+                                    <br />
+
+                                    @if (@Model.CTO.lstcto != null)
+                                    {
+                                <table style="width:100%">
+                                            <tr>
+                                                <th>Product Type</th>
+                                                <th>Product Group Name</th>
+                                                <th>In BL</th>
+                                                <th>In Case</th>
+                                                <th>Issue Date</th>
+                                                <th>Valid From</th>
+                                                <th>Valid UpTo</th>
+                                            </tr>
+                                            @foreach (var item in @Model.CTO.lstcto)
+                                            {
+
+                                                <tr>
+                                                    <td> @Html.DisplayFor(m=>item.ProductTypeName) </td>
+                                                    <td> @Html.DisplayFor(m=>item.ProductGroupName) </td>
+                                                    <td>@Html.DisplayFor(m=>item.ClInBl)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.ImflAndClInCases)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.IssueDate)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.ValidFrom)</td>
+                                                    <td>@Html.DisplayFor(modelItem => item.ValidUpto)</td>
+                                                </tr>
+
+
+
+                                            }
+                                        </table>
+                                    }
+
+
+                                </div>
+                    </div>
+                </div>
+            
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>
+                            <span data-translate="">Stock Details In B.L.</span>
+                        </h3>
+                    </div>
+                </div>
+           </div>
+        <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            
+                            <br />
+
+                            @if (@Model.stockDetailsInBl.lststock != null)
+                            {
+                                <table style="width:100%">
+                                    <tr>
+                                        <th>Product Category</th>
+                                        <th>SPIRIT PRODUCTION</th>
+                                        <th>Spirit Import</th>
+                                        <th>Spirit Export</th>
+                                        <th>Closing Stock</th>
+                                        
+                                    </tr>
+                                    @foreach (var item in @Model.stockDetailsInBl.lststock)
+                                    {
+
+                                        <tr>
+                                            <td> @Html.DisplayFor(m=>item.ProductCategory) </td>
+                                            <td> @Html.DisplayFor(m=>item.SpiritProduction) </td>
+                                            <td>@Html.DisplayFor(m=>item.SpiritImport)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.SpiritExport)</td>
+                                            <td>@Html.DisplayFor(modelItem => item.SpiritClosingStock)</td>
+                                            
+                                        </tr>
+
+
+
+                                    }
+                                </table>
+                            }
+
+
+                        </div>
+                    </div>
+                </div>
+
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="">Details Of Income in last financial year (In Lacs Rs.)</span>
+                      
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+
+                    <span data-translate="">Botteling Fee</span>
+                    @Html.TextAreaFor(model => model.finYearIncomeDetails.BottlingFee, new {@readonly="readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Import Fee</label>
+                    @Html.TextAreaFor(model => model.finYearIncomeDetails.ImportFee, new {@readonly="readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Export Fee</label>
+                    @Html.TextAreaFor(model => model.finYearIncomeDetails.ExportFee, new {@readonly="readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Other Fee</label>
+                    @Html.TextAreaFor(model => model.finYearIncomeDetails.OtheFee, new {@readonly="readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+          
+        </div>
+
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="Applied Rules">Applied Rule</span>
+                       
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                   
+                    <br />
+
+                    @if (@Model.checkboxitems.lstrule!= null)
+                    {
+                        int i = 1;
+                        <table class="table table-bordered table-responsive table-hover">
+                            <tr>
+                                <th>Sl No.</th>
+                                <th>Description</th>
+                             
+                            </tr>
+                            @foreach (var item in @Model.checkboxitems.lstrule)
+                            {
+
+                                <tr>
+                                    <td> <label>@i</label> </td>
+                                    <td> @Html.DisplayFor(m=>item.Descriptipn) </td>
+                                   
+                                </tr>
+
+                                i = i + 1;
+
+                            }
+                        </table>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+           
+            @*  <div class="col-md-3">
+        <div class="form-group">
+        <label class="form-label " data-translate="">IMFL Production</label>
+        @Html.TextBoxFor(m => m.stockDetailsInBl.IMFLProduction, new { @class = "form-control", id="txtimfprod",@onchange="getimfprodstock()" })
+        @Html.ValidationMessageFor(m => m.stockDetailsInBl.IMFLProduction, "", new { @class = "text-danger validation-message", id = "" })
+
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div class="form-group">
+        <label class="form-label " data-translate="">IMFL Dispatch</label>
+        @Html.TextBoxFor(m => m.stockDetailsInBl.IMFLDispatch, new { @class = "form-control",id="txtimfdispatch",@onchange="getimfprodstock()" })
+        @Html.ValidationMessageFor(m => m.stockDetailsInBl.IMFLDispatch, "", new { @class = "text-danger validation-message", id = "" })
+
+        </div>
+        </div>
+
+        <div class="col-md-3">
+        <div class="form-group">
+        <label class="form-label " data-translate="">Closing Stock</label>
+        @Html.TextBoxFor(m => m.stockDetailsInBl.IMFLClosingStock, new { @class = "form-control",id="txtimfclosing",@readonly = "readonly"})
+        @Html.ValidationMessageFor(m => m.stockDetailsInBl.IMFLClosingStock, "", new { @class = "text-danger validation-message", id = "" })
+
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div class="form-group">
+        <label class="form-label " data-translate="">CL Production</label>
+        @Html.TextBoxFor(m => m.stockDetailsInBl.CLProduction, new { @class = "form-control",@onchange="getclprodstock()",id="txtclprod" })
+        @Html.ValidationMessageFor(m => m.stockDetailsInBl.CLProduction, "", new { @class = "text-danger validation-message", id = "" })
+
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div class="form-group">
+        <label class="form-label " data-translate="">CL Dispatch</label>
+        @Html.TextBoxFor(m => m.stockDetailsInBl.CLDispatch, new { @class = "form-control",@onchange="getclprodstock()",id="txtcldispatch" })
+        @Html.ValidationMessageFor(m => m.stockDetailsInBl.CLDispatch, "", new { @class = "text-danger validation-message", id = "" })
+
+        </div>
+        </div>
+        <div class="col-md-3">
+        <div class="form-group">
+        <label class="form-label " data-translate="">Closing Stock</label>
+        @Html.TextBoxFor(m => m.stockDetailsInBl.CLClosingStock, new { @class = "form-control",id="txtclclosing",@readonly = "readonly" })
+        @Html.ValidationMessageFor(m => m.stockDetailsInBl.CLClosingStock, "", new { @class = "text-danger validation-message", id = "" })
+
+        </div>
+        </div> *@
+
+       @*  </div> *@
+    }
+</body>
+<script>
+    $('#btnBack').click(function () {
+        
+        window.location.href = "../ManufactureUnitRenewal/ManufactureunitRenewalView";
+    });
+</script>

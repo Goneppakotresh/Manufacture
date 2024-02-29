@@ -1,0 +1,820 @@
+﻿@model IEMS_WEB.Areas.ManufactureUnitRenewal.Model.Request.ListManufacturingUnitRenewalSaveModel
+@{
+    ViewBag.Title = "AEO Remark";
+
+}
+
+@Html.HiddenFor(model => model.AeoRemark.InsepectionsJson, new { @id = "hdnJsonInsepections",@class = "form-control aeo" })
+@Html.HiddenFor(model => model.AeoRemark.PendingDuesJson, new { @id = "hdnJsonPendingDues", @class = "form-control aeo" })
+@Html.HiddenFor(model => model.AeoRemark.CasesJson, new { @id = "hdnJsonCases", @class = "form-control aeo" })
+<br />
+<div class="page-title">
+    <div class="row">
+        <div class="col-12">
+            <h3>
+                <span data-translate="">OIC Unit Details</span>
+            </h3>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Details of Inspections</label>
+        </div>
+    </div>
+    
+</div>
+<div class="row">
+    
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Date of Inspections</label>
+            <br />
+
+            @Html.TextBoxFor(model => model.AeoRemark.DateOfInsepections, new { @class = "form-control aeo" })
+            <span class="text-danger validation-message" id="eDateOfInsepections"></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Details of Discrepancy found and action taken</label>
+            <br />
+
+            @Html.TextAreaFor(model => model.AeoRemark.DetailsOFDiscrepancy, new { @class = "form-control aeo" })
+            <span class="text-danger validation-message" id="eDetailsOFDiscrepancy"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Total Inspections of unit during the year</label>
+            <br />
+
+            @Html.TextBoxFor(model => model.AeoRemark.TotalInsepections, new { @class = "form-control numbers aeo", @readonly = true })
+            <span class="text-danger validation-message" id="eTotalInsepections"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="col-md-3">
+            <div class="form-group">
+                <button type="button" class="btn btn-success pull-right" id="btnAddInsepections" data-translate="Add" data-original-title="" title="">Add</button>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <table id="grdInsepections" class="table display table-bordered dataTable no-footer dtr-inline">
+            <thead>
+                <tr style="text-align: center;">
+                    <th style="text-align: center" data-translate="SR.">SR.</th>
+
+                    <th style="text-align: center" data-translate="Date of Inspections">Date of Inspections</th>
+                    <th style="text-align: center" data-translate="Details">Details</th>
+                    <th style="text-align: center" data-translate="Action">Action</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Laboratory Plant is Working Properly?</label>
+
+            <br />
+            <label>
+                @Html.RadioButtonFor(model => model.AeoRemark.IsLabPlantWorking, 1, new { @class = "unit-type-radio aeo" }) Yes
+            </label>
+
+            <label>
+                @Html.RadioButtonFor(model => model.AeoRemark.IsLabPlantWorking, 0, new { @class = "unit-type-radio aeo" }) No
+            </label>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label mandatory" data-translate="">Web Cameras is Working Properly?</label>
+
+            <br />
+            <label>
+                @Html.RadioButtonFor(model => model.AeoRemark.IsWebCamerasWorking, 1, new { @class = "unit-type-radio aeo" }) Yes
+            </label>
+
+            <label>
+                @Html.RadioButtonFor(model => model.AeoRemark.IsWebCamerasWorking, 0, new { @class = "unit-type-radio aeo" }) No
+            </label>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label" data-translate="">Pending Dues(in RS.)</label>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label" data-translate="">Year</label>
+
+            <br />
+            
+            @Html.DropDownListFor(model => model.AeoRemark.PendingYearId, Model.AeoRemark.lstYears, new { @class = "dropdown form-control aeo" })
+            <span class="text-danger validation-message" id="ePendingYearId"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label" data-translate="">Pending Amount</label>
+
+            <br />
+            
+            @Html.TextBoxFor(model => model.AeoRemark.PendingAmount, new { @class = "form-control allowDecimal aeo" })
+            <span class="text-danger validation-message" id="ePendingAmount"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="col-md-3">
+            <div class="form-group">
+                <button type="button" class="btn btn-success pull-right" id="btnAddDues" data-translate="Add" data-original-title="" title="">Add</button>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <table id="grdPendingDues" class="table display table-bordered dataTable no-footer dtr-inline">
+            <thead>
+                <tr style="text-align: center;">
+                    <th style="text-align: center" data-translate="SR.">SR.</th>
+
+                    <th style="text-align: center" data-translate="YEAR">YEAR</th>
+                    <th style="text-align: center" data-translate="PENDING AMOUNT">PENDING AMOUNT</th>
+                    <th style="text-align: center" data-translate="Action">Action</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label" data-translate="">FIR Cases Registered Against the Unit</label>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label" data-translate="">FIR Number</label>
+
+            <br />
+
+            @Html.TextBoxFor(model => model.AeoRemark.FIRNo, new { @class = "form-control aeo" })
+            <span class="text-danger validation-message" id="eFIRNo"></span>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label class="form-label" data-translate="">FIR Date</label>
+
+            <br />
+            @Html.TextBoxFor(model => model.AeoRemark.FIRDate, new { @class = "form-control aeo" })
+            <span class="text-danger validation-message" id="eFIRDate"></span>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label class="form-label" data-translate="">FIR Status</label>
+
+            <br />
+            @Html.DropDownListFor(model => model.AeoRemark.FIRStatus, (List<SelectListItem>)ViewBag.FIRCasesStatus, new { @class = "dropdown form-control aeo" })
+            <span class="text-danger validation-message" id="eFIRStatus"></span>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group">
+            <label class="form-label" data-translate="">Court Stay</label>
+
+            <br />
+            @Html.DropDownListFor(model => model.AeoRemark.CourtStay, (List<SelectListItem>)ViewBag.CourtStay, new { @class = "dropdown form-control aeo" })
+            <span class="text-danger validation-message" id="eCourtStay"></span>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <button type="button" class="btn btn-success pull-right" id="btnAddCases" data-translate="Add" data-original-title="" title="">Add</button>
+        </div>
+    </div>
+    <div class="">
+        <table id="grdCases" class="table display table-bordered dataTable no-footer dtr-inline">
+            <thead>
+                <tr style="text-align: center;">
+                    <th style="text-align: center" data-translate="SR.">SR.</th>
+
+                    <th style="text-align: center" data-translate="FIR Number">FIR Number</th>
+                    <th style="text-align: center" data-translate="FIR Date">FIR Date</th>
+                    <th style="text-align: center" data-translate="FIR Status">FIR Status</th>
+                    <th style="text-align: center" data-translate="Court Stay">Court Stay</th>
+                    <th style="text-align: center" data-translate="Action">Action</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <br />
+            <label class="form-label" data-translate="">Pending Court Case</label>
+
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label" data-translate="">(No. of) Cases</label>
+
+            <br />
+            @Html.TextBoxFor(model => model.AeoRemark.NoOfCases, new { @class = "form-control numbers aeo" })
+
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label" data-translate="">Remarks</label>
+
+            <br />
+
+            @Html.TextAreaFor(model => model.AeoRemark.RemarkOfCases, new { @class = "form-control aeo" })
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label" data-translate="">Details of action taken regarding Dues against Unit</label>
+            <br />
+
+            @Html.TextBoxFor(model => model.AeoRemark.ActionDetailAgainstUnit, new { @class = "form-control aeo" })
+                <span class="text-danger validation-message" id="eActionDetailAgainstUnit"></span>
+        </div>
+    </div>
+   
+</div>
+@Html.Partial("_FileUpload1")
+<div class="col-md-6">
+    <div class="form-group">
+        <label class="form-label mandatory" data-translate="">Remarks based on online application of unit and above information for renewal</label>
+        <br />
+
+        @Html.TextAreaFor(model => model.AeoRemark.RemarksBasedOnApplication, new { @class = "form-control aeo" })
+        <span class="text-danger validation-message" id="eRemarksBasedOnApplication"></span>
+    </div>
+</div>
+    <div class="text-center">
+    <button type="button" id="btnSubmitAeo" value="Save" class="btn btn-success aeo">Save Draft</button>
+
+    </div>
+
+<script>
+    $(document).ready(function () {
+        $('#AeoRemark_DateOfInsepections').datepicker({
+            dateFormat: "dd-M-yy",
+            minDate:"01-apr-2023"
+
+        });
+        $('#AeoRemark_PendingYear').datepicker({
+            dateFormat: "dd-M-yy",
+
+        });
+        $('#AeoRemark_FIRDate').datepicker({
+            dateFormat: "dd-M-yy",
+
+        });
+        $('#AeoRemark_FIRDate').datepicker({
+            dateFormat: "dd-M-yy",
+
+        });
+
+        $('#btnAddInsepections').click(function () {
+            
+            var DateOfInsepections = $('#AeoRemark_DateOfInsepections').val();
+            var DetailsOFDiscrepancy = $('#AeoRemark_DetailsOFDiscrepancy').val();
+
+            if (DateOfInsepections == "") {
+                $('#eDateOfInsepections').text("Choose Date Of Inspections");
+                return false;
+            }
+            else {
+                $('#eDateOfInsepections').text("");
+            }
+
+            if (DetailsOFDiscrepancy == "") {
+                $('#eDetailsOFDiscrepancy').text("Fill Details");
+                return false;
+            }
+            else {
+                $('#eDetailsOFDiscrepancy').text("");
+            }
+
+            var data = $('#grdInsepections tbody').find('tr:last-child').find('td:first-child').text();
+            // Initialize a new object for the row data
+            if (data == "No data available in table") {
+                data = 0;
+            }
+            var newRowData = {
+                "slno": parseInt(data) + 1, // Increment the slno for the new row
+                "DateOfInsepections": DateOfInsepections,
+                "DetailsOFDiscrepancy": DetailsOFDiscrepancy,
+                
+            };
+
+
+            //for restrict duplicate row
+            var isAlreadyExist = false;
+            for (var i = 1; i <= parseInt(data); i++) {
+                var DateOfInsepection = $('#' + 'DateOfInsepections_' + i).text();
+                if (DateOfInsepection != "" && DateOfInsepection != undefined) {
+                    if (DateOfInsepection == DateOfInsepections) {
+                        isAlreadyExist = true;
+                    }
+                }
+
+            }
+            if (isAlreadyExist) {
+                $('#eDateOfInsepections').text('This date already added');
+            }
+            else {
+                tableInsepections.row.add(newRowData).draw();
+                $('#AeoRemark_TotalInsepections').val(parseInt(data) + 1);
+            }
+            
+        });
+        var tableInsepections = $('#grdInsepections').DataTable({
+
+            "columns": [
+                { "data": "slno", "autoWidth": true, "sortable": false },
+                {
+                    "data": "DateOfInsepections", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'DateOfInsepections_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "DetailsOFDiscrepancy", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'DetailsOFDiscrepancy_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "addremovebutton", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = row.slno;
+                        return "<button class='removeRow btn btn-danger' data-id='" + uniqueId + "'>Remove</button>";
+                    }
+                }
+
+            ],
+            // "columnDefs": [
+            //     { "targets": [0], "render": function (data, type, row, meta) { return meta.row + 1; } }
+            // ],
+            "order": [[0, "asc"]],
+            "responsive": false,
+            
+        });
+        $('#grdInsepections tbody').on('click', 'button.removeRow', function (e) {
+            e.preventDefault();
+            var rowsCount = tableInsepections.rows().count();
+            var index = $(this).closest("tr").index();
+            if (rowsCount > 0) {
+                tableInsepections.row(parseInt(index)).remove().draw();
+            }
+            var rowsCount = tableInsepections.rows().count();
+            if (rowsCount == 0) {
+
+                $('#hdnJsonInsepections').val("");
+            }
+
+        });
+        $('#btnAddDues').click(function () {
+
+            var PendingYearId = $('#AeoRemark_PendingYearId option:selected').val();
+            var PendingYear = $('#AeoRemark_PendingYearId option:selected').text();
+            var PendingAmount = $('#AeoRemark_PendingAmount').val();
+
+            if (PendingYearId == "0") {
+                $('#ePendingYearId').text("Select Year");
+                return false;
+            }
+            else {
+                $('#ePendingYearId').text("");
+            }
+
+            if (PendingAmount == "") {
+                $('#ePendingAmount').text("Fill Pending Amount");
+                return false;
+            }
+            else {
+                $('#ePendingAmount').text("");
+            }
+
+            var data = $('#grdPendingDues tbody').find('tr:last-child').find('td:first-child').text();
+            // Initialize a new object for the row data
+            if (data == "No data available in table") {
+                data = 0;
+            }
+            var newRowData = {
+                "slno": parseInt(data) + 1, // Increment the slno for the new row
+                "PendingYear": PendingYear,
+                "PendingAmount": PendingAmount,
+
+            };
+            //for restrict duplicate row
+            var isAlreadyExist = false;
+            for (var i = 1; i <= parseInt(data); i++) {
+                var PendingYearInTable = $('#' + 'PendingYear_' + i).text();
+                if (PendingYearInTable != "" && PendingYearInTable != undefined) {
+                    if (PendingYearInTable == PendingYear) {
+                        isAlreadyExist = true;
+                    }
+                }
+
+            }
+            if (isAlreadyExist) {
+                $('#ePendingYearId').text('This year already added');
+            }
+            else {
+                tablePendingDues.row.add(newRowData).draw();
+            }
+            
+        });
+        var tablePendingDues = $('#grdPendingDues').DataTable({
+
+            "columns": [
+                { "data": "slno", "autoWidth": true, "sortable": false },
+                {
+                    "data": "PendingYear", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        //var arr = data.split('_');
+                        var uniqueId = 'PendingYear_' + row.slno;
+                        //var uniqueId1 = 'PendingYear_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "PendingAmount", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'PendingAmount_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+
+                {
+                    "data": "addremovebutton", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = row.slno;
+                        return "<button class='removeRow btn btn-danger' data-id='" + uniqueId + "'>Remove</button>";
+                    }
+                }
+            ],
+            // "columnDefs": [
+            //     { "targets": [0], "render": function (data, type, row, meta) { return meta.row + 1; } }
+            // ],
+            "order": [[0, "asc"]],
+            "responsive": false,
+
+        });
+        $('#grdPendingDues tbody').on('click', 'button.removeRow', function (e) {
+            e.preventDefault();
+            var rowsCount = tablePendingDues.rows().count();
+            var index = $(this).closest("tr").index();
+            if (rowsCount > 0) {
+                tablePendingDues.row(parseInt(index)).remove().draw();
+            }
+            var rowsCount = tablePendingDues.rows().count();
+            if (rowsCount == 0) {
+
+                $('#hdnJsonPendingDues').val("");
+            }
+
+        });
+
+        $('#btnAddCases').click(function () {
+            var FIRNo = $('#AeoRemark_FIRNo').val();
+            var FIRDate = $('#AeoRemark_FIRDate').val();
+            var FIRStatusId = $('#AeoRemark_FIRStatus option:selected').val();
+            var FIRStatus = $('#AeoRemark_FIRStatus option:selected').text();
+            var CourtStayId = $('#AeoRemark_CourtStay option:selected').val();
+            var CourtStay = $('#AeoRemark_CourtStay option:selected').text();
+            
+            if (FIRNo == "") {
+                $('#eFIRNo').text("Fill FIR No");
+                return false;
+            }
+            else {
+                $('#eFIRNo').text("");
+            }
+            if (FIRDate == "") {
+                $('#eFIRDate').text("Fill FIR Date");
+                return false;
+            }
+            else {
+                $('#eFIRDate').text("");
+            }
+            if (FIRStatusId == "0") {
+                $('#eFIRStatus').text("Select FIR Status");
+                return false;
+            }
+            else {
+                $('#eFIRStatus').text("");
+            }
+
+            if (CourtStayId == "") {
+                $('#eCourtStay').text("Fill Court Stay");
+                return false;
+            }
+            else {
+                $('#eCourtStay').text("");
+            }
+
+            var data = $('#grdCases tbody').find('tr:last-child').find('td:first-child').text();
+            // Initialize a new object for the row data
+            if (data == "No data available in table") {
+                data = 0;
+            }
+            var newRowData = {
+                "slno": parseInt(data) + 1, // Increment the slno for the new row
+                "FIRNo": FIRNo,
+                "FIRDate": FIRDate,
+                "FIRStatus": FIRStatus,
+                "CourtStay": CourtStay,
+                
+
+            };
+
+            tableCases.row.add(newRowData).draw();
+        });
+        var tableCases = $('#grdCases').DataTable({
+
+            "columns": [
+                { "data": "slno", "autoWidth": true, "sortable": false },
+                {
+                    "data": "FIRNo", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'FIRNo_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "FIRDate", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'FIRDate_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "FIRStatus", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        //var arr = data.split('_');
+                        var uniqueId = 'FIRStatus_' + row.slno;
+                        //var uniqueId1 = 'FIRStatus_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "CourtStay", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        //var arr = data.split('_');
+                        var uniqueId = 'CourtStay_' + row.slno;
+                        //var uniqueId1 = 'CourtStay_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "addremovebutton", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = row.slno;
+                        return "<button class='removeRow btn btn-danger' data-id='" + uniqueId + "'>Remove</button>";
+                    }
+                }
+
+            ],
+            // "columnDefs": [
+            //     { "targets": [0], "render": function (data, type, row, meta) { return meta.row + 1; } }
+            // ],
+            "order": [[0, "asc"]],
+            "responsive": false,
+
+        });
+
+        $('#grdCases tbody').on('click', 'button.removeRow', function (e) {
+            e.preventDefault();
+            var rowsCount = tableCases.rows().count();
+            var index = $(this).closest("tr").index();
+            if (rowsCount > 0) {
+                tableCases.row(parseInt(index)).remove().draw();
+            }
+            var rowsCount = tableCases.rows().count();
+            if (rowsCount == 0) {
+
+                $('#hdnJsonCases').val("");
+            }
+
+        });
+        //btnSubmitAeo
+        $('#btnSubmitAeo').click(function () {
+            var TotalInsepections = $('#AeoRemark_TotalInsepections').val();
+            var ActionDetailAgainstUnit = $('#AeoRemark_ActionDetailAgainstUnit').val();
+            var RemarksBasedOnApplication = $('#AeoRemark_RemarksBasedOnApplication').val();
+
+
+            // if (TotalInsepections == "0") { 
+            //     $('#eTotalInsepections').text("Fill total inspections");
+            //     return false;
+            // }
+            // else{
+            //     $('#eTotalInsepections').text("");
+            // }
+            // if (ActionDetailAgainstUnit == "") {
+            //     $('#eActionDetailAgainstUnit').text("Fill Action Detail Against Unit");
+            //     return false;
+            // }
+            // else {
+            //     $('#eActionDetailAgainstUnit').text("");
+            // }
+            var InsepectionsJson = SaveInsepectionsJson();
+            if (InsepectionsJson) {
+                
+            }
+            else {
+                $('#eDateOfInsepections').text("Fill Inspection date and details");
+                return false;
+            }
+            if (RemarksBasedOnApplication == "") {
+                $('#eRemarksBasedOnApplication').text("Fill Remarks Based On Application");
+                
+                return false;
+            }
+            else {
+                $('#eRemarksBasedOnApplication').text("");
+            }
+            
+            if (ValidateFiles()) {
+                
+            }
+            else { 
+                return false;
+            }
+            SavePendingDuesJson();
+            SaveCasesJson();
+
+            
+            tmp = {
+                'RequestId': parseInt($("#hdnTransactionId").val()),
+                'TotalInsepections': parseInt(TotalInsepections),
+                'IsLabPlantWorking': parseInt($("#AeoRemark_IsLabPlantWorking:checked").val()),
+                    'IsWebCamerasWorking': parseInt($("#AeoRemark_IsWebCamerasWorking:checked").val()),
+                'NoOfCases': parseInt($("#AeoRemark_NoOfCases").val()),
+                'RemarkOfCases': $("#AeoRemark_RemarkOfCases").val(),
+                'ActionDetailAgainstUnit': ActionDetailAgainstUnit,
+                'RemarksBasedOnApplication': RemarksBasedOnApplication,
+                'InsepectionsJson': $("#hdnJsonInsepections").val(),
+                'PendingDuesJson': $("#hdnJsonPendingDues").val(),
+                'CasesJson': $("#hdnJsonCases").val()
+            }
+            debugger
+
+            $.ajax({
+                type: "POST",
+                url: "../ManufactureUnitRenewal/AEODetailSave",
+                data: { model: tmp},
+                async: false,
+                dataType: 'json',
+                success: function (data) {
+                    debugger
+                    if (data.ResponseModel > 0) {
+
+                        $('#btnAction').removeAttr('disabled');
+                        $('#btnSubmitAeo').attr('disabled', 'disabled');
+                    }
+                    else {
+                        $('#btnAction').attr('disabled', 'disabled');
+                        $('#btnSubmitAeo').removeAttr('disabled');
+                    }
+                }
+            });
+        });
+    });
+
+
+    function SaveInsepectionsJson() {
+
+        
+        var JsonDetails = "";
+        var isValid = true;
+        var arr = [];
+        $('#grdInsepections tbody tr').each(function (index, row) {
+            var rowId = $(row).find('td:first-child').text(); // Assuming the first column contains the slno
+            if (rowId == "No data available in table" || rowId == "") {
+                data = 0;
+            }
+            else {
+                var Details = {
+                    'slno': rowId,
+
+                    'DateOfInsepections': $('#' + 'DateOfInsepections_' + rowId).text(),
+                    'DetailsOFDiscrepancy': $('#' + 'DetailsOFDiscrepancy_' + rowId).text(),
+
+                };
+                arr.push(Details);
+            }
+            
+        });
+        JsonDetails += JSON.stringify(arr);
+        $('#hdnJsonInsepections').val(JsonDetails);
+
+        if (isValid && $('#hdnJsonInsepections').val() !== "" && $('#hdnJsonInsepections').val() !== "[]") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    function SavePendingDuesJson() {
+
+
+        var JsonDetails = "";
+        var isValid = true;
+        var arr = [];
+        $('#grdPendingDues tbody tr').each(function (index, row) {
+            var rowId = $(row).find('td:first-child').text(); // Assuming the first column contains the slno
+            var Details = {
+                'slno': rowId,
+
+                //'PendingYearId': $('#' + 'PendingYearId_' + rowId).text(),
+                'PendingYear': $('#' + 'PendingYear_' + rowId).text(),
+                'PendingAmount': $('#' + 'PendingAmount_' + rowId).text(),
+
+            };
+            arr.push(Details);
+
+        });
+        JsonDetails += JSON.stringify(arr);
+        $('#hdnJsonPendingDues').val(JsonDetails);
+
+        if (isValid && $('#hdnJsonPendingDues').val() !== "") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    function SaveCasesJson() {
+
+
+        var JsonDetails = "";
+        var isValid = true;
+        var arr = [];
+        $('#grdCases tbody tr').each(function (index, row) {
+            var rowId = $(row).find('td:first-child').text(); // Assuming the first column contains the slno
+            var Details = {
+                'slno': rowId,
+                'FIRNo': $('#' + 'FIRNo_' + rowId).text(),
+                'FIRDate': $('#' + 'FIRDate_' + rowId).text(),
+                //'FIRStatusId': $('#' + 'FIRStatusId_' + rowId).text(),
+                'FIRStatus': $('#' + 'FIRStatus_' + rowId).text(),
+                //'CourtStayId': $('#' + 'CourtStayId_' + rowId).text(),
+                'CourtStay': $('#' + 'CourtStay_' + rowId).text(),
+
+            };
+            arr.push(Details);
+
+        });
+        JsonDetails += JSON.stringify(arr);
+        $('#hdnJsonCases').val(JsonDetails);
+
+        if (isValid && $('#hdnJsonCases').val() !== "") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>

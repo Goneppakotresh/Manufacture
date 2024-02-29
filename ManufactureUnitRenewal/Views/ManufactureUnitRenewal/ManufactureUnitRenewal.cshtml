@@ -1,0 +1,3242 @@
+﻿@model IEMS_WEB.Areas.ManufactureUnitRenewal.Model.Request.ListManufacturingUnitRenewalSaveModel
+@{
+    ViewData["Title"] = "ManufactureUnitRenewal";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Raw(TempData["Alert"])
+@using (Html.BeginForm(FormMethod.Post, new { enctype = "multipart/form-data", @class = "needs-validation", @novalidate = "", @id = "formmfgunitrenewal" }))
+{
+
+    @Html.HiddenFor(model => model.ProductCapacityJson, new { @id = "hdnJsonProductCapacity", @class = "hid" })
+    @Html.HiddenFor(model => model.CTOJson, new { @id = "hdnJsonCTO", @class = "hid" })
+    @Html.HiddenFor(model => model.StockBLJson, new { @id = "hdnJsonStockBL", @class = "hid" })
+    @Html.HiddenFor(model => model.FeeJson, new { @id = "hdnJsonFee", @class = "hid" })
+    @Html.HiddenFor(m => m.RULEJson, new { @id = "hdnJsonCheckBox", @class = "hid" })
+
+    @Html.HiddenFor(m => m.FormCode, new { @id = "hdnFormCode", @class = "hid" })
+    @Html.HiddenFor(m => m.sActionType, new { @id = "hdnsActionType", @class = "hid" })
+    @Html.HiddenFor(m => m.ApprovalStatus, new { @id = "hdnApprovalStatus", @class = "hid" })
+    @Html.HiddenFor(m => m.CurrRoleId, new { @id = "hdnRoleOrUserId", @class = "hid" })
+    @Html.HiddenFor(m => m.CurrRoleType, new { @id = "hdnRoleOrUserType", @class = "hid" })
+    @Html.HiddenFor(m => m.StageType, new { @id = "hdnStageType", @class = "hid" })
+    @Html.HiddenFor(m => m.CurrStageId, new { @id = "hdnStageId", @class = "hid" })
+    @Html.HiddenFor(m => m.WorkFlowObjectId, new { @id = "hdnWorkFlowObjectId", @class = "hid" })
+    @Html.HiddenFor(m => m.ActionId, new { @id = "hdnActionId", @class = "hid" })
+    @Html.HiddenFor(m => m.LocationCode, new { @id = "hdnLocationCode", @class = "hid" })
+    @Html.HiddenFor(m => m.TransactionId, new { @id = "hdnTransactionId", @class = "hid" })
+
+
+
+
+    @if (Model.StageType != "I")
+    {
+
+
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="Manufacturing Unit Renewal">Manufacturing Unit Renewal</span>
+                        <button type="button" class="btn btn-primary pull-right" data-translate="Back" id="btnBack"> Back</button>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Renewed for Financial Year</label>
+                    @*  @if (@TempData["finyr"]!=null)
+            {
+            ViewBag.ddlfinanceYear = @TempData["finyr"];
+
+            } *@
+                    @* @Html.HiddenFor(m=>m.licenseeIssuredUnit.FinanceYear,new {@id="hdnFinYear"}) *@
+                    @Html.DropDownListFor(
+                             model => model.licenseeIssuredUnit.FinanceYear, (List<SelectListItem>)ViewBag.ddlfinanceYear, new { @class = "form-control", @onchange = "GetUnitList()" })
+                    @Html.ValidationMessageFor(m => m.licenseeIssuredUnit.FinanceYear, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eFinanceYear"></span>
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Name Of Main Unit</label>
+                    @Html.HiddenFor(m => m.licenseeIssuredUnit.LicenseeTypeId, new { @id = "hdnRoleName" })
+                    @Html.DropDownListFor(model => model.manufacturingUnitModel.MainUnitNameId, (List<SelectListItem>)ViewBag.ddlManufacturUnitName, new { @class = "dropdown form-control" })
+                    @Html.ValidationMessageFor(m => m.manufacturingUnitModel.MainUnitNameId, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eMainUnitNameId"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Unit Type</label>
+                    <br />
+                    <label>
+                        @Html.RadioButtonFor(model => model.manufacturingUnitModel.UnitTypeName, "Manufacturing", new { @class = "unit-type-radio", @onclick = "GetUnitList()" }) Manufacturing
+                    </label>
+
+                    <label>
+                        @Html.RadioButtonFor(model => model.manufacturingUnitModel.UnitTypeName, "Franchise", new { @class = "unit-type-radio", @onclick = "GetUnitList()" }) Franchise
+                    </label>
+                    @Html.ValidationMessageFor(m => m.manufacturingUnitModel.UnitTypeName, "", new { @class = "text-danger validation-message", id = "" })
+                    <br /><span class="text-danger validation-message" id="eUnitTypeName"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Name Of Unit </label>
+                    @Html.DropDownListFor(
+                             model => model.manufacturingUnitModel.UnitNameId, (List<SelectListItem>)ViewBag.test, new { @id = "ddlManufacturUnit", @class = "dropdown form-control", @onchange = "getDeoDetail()" })
+                    @Html.ValidationMessageFor(m => m.manufacturingUnitModel.UnitNameId, "", new { @class = "text-danger validation-message", id = "" })
+                    @Html.HiddenFor(s => s.manufacturingUnitModel.UnitTypeName)
+                    <span class="text-danger validation-message" id="eUnitNameId"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Address Of Unit </label>
+                    @Html.TextBoxFor(model => model.manufacturingUnitModel.AddressOfUnit, new { @class = "form-control", @id = "ddlManufacturUnitAddress", @readonly = true })
+                    @Html.ValidationMessageFor(m => m.manufacturingUnitModel.AddressOfUnit, "", new { @class = "text-danger validation-message", id = "" })
+
+                </div>
+            </div>
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>
+                            <span data-translate="">Rule Under which license has been issued to unit </span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Type Of Licensee </label>
+                    @Html.DropDownListFor(
+                             model => model.licenseeIssuredUnit.LicenseeType, (List<SelectListItem>)ViewBag.ddlLicenseeUnitName, new { @class = "dropdown form-control", id = "ddlmainunit" })
+                    @Html.ValidationMessageFor(m => m.licenseeIssuredUnit.LicenseeType, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eLicenseeType"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Rule </label>
+                    @Html.DropDownListFor(
+                             model => model.licenseeIssuredUnit.LicenseeRuleId, (List<SelectListItem>)ViewBag.ddlRule, new { @class = "dropdown form-control" })
+                    @Html.ValidationMessageFor(m => m.licenseeIssuredUnit.LicenseeRuleId, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eLicenseeRuleId"></span>
+                </div>
+            </div>
+
+            @* <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">Fee Deposite</label>
+    <br />
+    <label>
+    @Html.RadioButtonFor(model => model.licenseeIssuredUnit.FeeDeposite, "Yes") Yes
+    </label>
+
+    <label>
+    @Html.RadioButtonFor(model => model.licenseeIssuredUnit.FeeDeposite, "No") No
+    </label>
+    @Html.ValidationMessageFor(m => m.licenseeIssuredUnit.FeeDeposite, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div> *@
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Date of Establishment Of Plant </label>
+                    @Html.TextBoxFor(model => model.licenseeIssuredUnit.EstablishmentOfPantDate, new { @class = "form-control datepicker", @readonly = "readonly" })
+                    @Html.ValidationMessageFor(m => m.licenseeIssuredUnit.EstablishmentOfPantDate, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eEstablishmentOfPantDate"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Date of Commencement of Production </label>
+                    @Html.TextBoxFor(model => model.licenseeIssuredUnit.CommencementOfProductionDate, new { @class = "form-control datepicker", @readonly = "readonly" })
+                    @Html.ValidationMessageFor(m => m.licenseeIssuredUnit.CommencementOfProductionDate, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eCommencementOfProductionDate"></span>
+                </div>
+            </div>
+
+            @*     <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">Financial Year of Renewed License  </label>
+    @Html.DropDownListFor(
+    model => model.licenseeIssuredUnit.FinanceYear,(List<SelectListItem>)ViewBag.ddlfinanceYear, new{@class = "dropdown form-control"})
+    @Html.ValidationMessageFor(m => m.licenseeIssuredUnit.FinanceYear, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div> *@
+            @* <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">GRN </label>
+    @Html.TextBoxFor(model => model.renewalFeeDetails.GRN, new{@class="form-control"})
+    @Html.ValidationMessageFor(m => m.renewalFeeDetails.GRN, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div> *@
+            @* <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">GRN Date</label>
+    @Html.TextBoxFor(model => model.renewalFeeDetails.GRNDate, new{@class="form-control datepicker"})
+    @Html.ValidationMessageFor(m => m.renewalFeeDetails.GRNDate, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div> *@
+            @* <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">Fee Type  </label>
+    @Html.DropDownListFor(
+    model => model.renewalFeeDetails.FeeTypeId, (List<SelectListItem>)ViewBag.ddlFeeType, new{@class = "dropdown form-control"})
+    @Html.ValidationMessageFor(m => m.renewalFeeDetails.FeeTypeId, "", new { @class = "text-danger validation-message", id = "" })
+    </div>
+    </div> *@
+            @* <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">Fee Deposite Amount</label>
+    @Html.TextBoxFor(model => model.renewalFeeDetails.FeeDepositAmmount, new{@class="form-control"})
+    @Html.ValidationMessageFor(m => m.renewalFeeDetails.FeeDepositAmmount, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div> *@
+            @* <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">Upload Challan</label>
+    @Html.TextBoxFor(m => m.renewalFeeDetails.UploadChalan, new { type = "file" })
+    @Html.ValidationMessageFor(m => m.renewalFeeDetails.UploadChalan, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div> *@
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>
+                            <span data-translate=""> Fee Details (In Rs.)</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Fee Type  </label>
+                    @Html.DropDownListFor(
+                             model => model.renewalFeeDetails.FeeTypeId, Model.manufacturingUnitModel.CheckBoxItems, new { @class = "dropdown form-control" })
+                    <span class="text-danger validation-message" id="eFeeTypeId"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">GRN Number</label>
+                    @Html.TextBoxFor(m => m.lateFeeDetails.LateFeeGRN, new { @class = "form-control" })
+                    <span class="text-danger validation-message" id="eLateFeeGRN"></span>
+
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">GRN Date</label>
+                    @Html.TextBoxFor(m => m.lateFeeDetails.LateFeeGRNDate, new { @class = "form-control" })
+                    <span class="text-danger validation-message" id="eLateFeeGRNDate"></span>
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Upload Challan</label>
+                    @Html.TextBoxFor(m => m.lateFeeDetails.LateFeeUploadChalan, new { type = "file" })
+                    <span class="text-danger validation-message" id="eLateFeeUploadChalan"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label " data-translate="">Total Amount</label>
+                    @Html.TextBoxFor(m => m.lateFeeDetails.LateFeeDepositedAmmount, new { @class = "form-control allowDecimal" })
+                    @Html.ValidationMessageFor(m => m.lateFeeDetails.LateFeeDepositedAmmount, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eLateFeeDepositedAmmount"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button type="button" class="btn btn-success pull-right" id="btnAddFee" data-translate="Add" data-original-title="" title="">GRN Verify & Add</button>
+                    <br /> <span class="text-danger validation-message" id="ebtnAddFee"></span>
+                </div>
+            </div>
+            <div class="">
+                <table id="grdFee" class="table display table-bordered dataTable no-footer dtr-inline">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <th style="text-align: center" data-translate="SR.">SR.</th>
+
+                            <th style="text-align: center" data-translate="Fee Type">Fee Type</th>
+                            <th style="text-align: center" data-translate="GRN Number">GRN Number</th>
+                            <th style="text-align: center" data-translate="GRN Date">GRN Date</th>
+                            <th style="text-align: center" data-translate="Challan">Challan</th>
+                            <th style="text-align: center" data-translate="Total Amount">Total Amount</th>
+                            <th style="text-align: center" data-translate="Action">Action</th>
+
+                        </tr>
+                    </thead>
+
+                </table>
+            </div>
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>
+                            <span data-translate="">Production Capacity</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Production Type</label>
+                    <br />
+                    <label>
+                        @Html.RadioButtonFor(model => model.productionCapacity.ProductionTypeName, "Per Day") Per Day
+                    </label>
+
+                    <label>
+                        @Html.RadioButtonFor(model => model.productionCapacity.ProductionTypeName, "Per Month") Per Month
+                    </label>
+
+                    <label>
+                        @Html.RadioButtonFor(model => model.productionCapacity.ProductionTypeName, "Per Annum") Per Annum
+                    </label>
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ProductionTypeName, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="ePCProductionType"></span>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    @* <label class="form-label mandatory" data-translate="">IMFL (IN B.L.)</label> *@
+                    @* @Html.TextBoxFor(m => m.productionCapacity.ImflInBL, new { @class = "form-control" }) *@
+
+                    @* @Html.DropDownListFor(
+            model => model.licenseeIssuredUnit.LicenseeTypeId, (List<SelectListItem>)ViewBag.ddlLicenseeUnitName, new{@class = "dropdown form-control"})
+            @Html.ValidationMessageFor(m => m.productionCapacity.ImflInBL, "", new { @class = "text-danger validation-message", id = "" })
+            *@
+                    <label class="form-label mandatory" data-translate="">Product Group</label>
+                    @Html.DropDownListFor(
+                             model => model.licenseeIssuredUnit.ProductGroupId, (List<SelectListItem>)ViewBag.ddlProductGroup, new { @class = "dropdown form-control" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ImflInBL, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="ePCProductGroup"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">IN B.L.</label>
+                    @Html.TextBoxFor(m => m.productionCapacity.ClInBl, new { @class = "form-control  allowDecimal" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ClInBl, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="ePCClInBl"></span>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">In Cases</label>
+                    @Html.TextBoxFor(m => m.productionCapacity.ImflAndClInBl, new { @class = "form-control allowDecimal" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ImflAndClInBl, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="ePCImflAndClInBl"></span>
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button type="button" class="btn btn-success pull-right" id="btnAdd" data-translate="Add" data-original-title="" title="">Add</button>
+                    <br /> <span class="text-danger validation-message" id="ebtnAddProductionCapacity"></span>
+                </div>
+            </div>
+            <div class="">
+                <table id="grdProductionCapacity" class="table display table-bordered dataTable no-footer dtr-inline">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <th style="text-align: center" data-translate="SR.">SR.</th>
+
+                            <th style="text-align: center" data-translate="Production Type">Production Type</th>
+                            <th style="text-align: center" data-translate="Product Group">Product Group</th>
+                            <th style="text-align: center" data-translate="IN B.L.">IN B.L.</th>
+                            <th style="text-align: center" data-translate="In Cases">In Cases</th>
+                            <th style="text-align: center" data-translate="Action">Action</th>
+
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td id="prodBL"></td>
+                            <td id="prodCases"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+
+
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>
+                            <span data-translate="">Production Capacity Rajasthan Pollution Control Board</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Production Type</label>
+                    <br />
+                    <label>
+                        @Html.RadioButtonFor(model => model.CTO.ProductionTypeName, "Per Day") Per Day
+                    </label>
+
+                    <label>
+                        @Html.RadioButtonFor(model => model.CTO.ProductionTypeName, "Per Month") Per Month
+                    </label>
+
+                    <label>
+                        @Html.RadioButtonFor(model => model.CTO.ProductionTypeName, "Per Annum") Per Annum
+                    </label>
+                    @Html.ValidationMessageFor(m => m.CTO.ProductionTypeName, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eCTOTypeName"></span>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+
+                    <label class="form-label mandatory" data-translate="">Product Group</label>
+                    @Html.DropDownListFor(
+                             model => model.CTO.ProductGroupId, (List<SelectListItem>)ViewBag.ddlProductGroup, new { @class = "dropdown form-control" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ImflInBL, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eCTOroductGroup"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">IN B.L.</label>
+                    @Html.TextBoxFor(m => m.CTO.ClInBl, new { @class = "form-control allowDecimal" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ClInBl, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eCTOClInBl"></span>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">IN Cases</label>
+                    @Html.TextBoxFor(m => m.CTO.ImflAndClInBl, new { @class = "form-control allowDecimal" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ImflAndClInBl, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eCTOImflAndClInBl"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Date Of Issue</label>
+                    @Html.TextBoxFor(m => m.CTO.IssueDate, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ImflAndClInBl, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eIssueDate"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Valid From</label>
+                    @Html.TextBoxFor(m => m.CTO.ValidFrom, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ImflAndClInBl, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eCTOValidFrom"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Valid Upto</label>
+                    @Html.TextBoxFor(m => m.CTO.ValidUpto, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ImflAndClInBl, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eCTOValidUpto"></span>
+                </div>
+            </div>
+
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button type="button" class="btn btn-success pull-right" id="btnAddCTO" data-translate="Add" data-original-title="" title="">Add</button>
+                    <br /> <span class="text-danger validation-message" id="ebtnAddCTO"></span>
+                </div>
+            </div>
+            <div class="">
+                <table id="grdCTO" class="table display table-bordered dataTable no-footer dtr-inline">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <th style="text-align: center" data-translate="SR.">SR.</th>
+
+                            <th style="text-align: center" data-translate="Production Type">Prod Type</th>
+                            <th style="text-align: center" data-translate="Product Group">Group</th>
+                            <th style="text-align: center" data-translate="IN B.L.">IN B.L.</th>
+                            <th style="text-align: center" data-translate="IN Cases">IN Cases</th>
+                            <th style="text-align: center" data-translate="Date Of Issue">Issue Date</th>
+                            <th style="text-align: center" data-translate="Valid From">Valid From</th>
+                            <th style="text-align: center" data-translate="Valid Upto">Valid Upto</th>
+                            <th style="text-align: center" data-translate="Action">Action</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td id="tdCTObl"></td>
+                            <td id="tdCTOcase"></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>
+                            <span data-translate=""> Stock Details In B.L.</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+
+                    <label class="form-label mandatory" data-translate="">Product Group</label>
+                    @Html.DropDownListFor(
+                             model => model.BLProductGroupId, (List<SelectListItem>)ViewBag.ddlProductGroup, new { @class = "dropdown form-control" })
+                    @Html.ValidationMessageFor(m => m.productionCapacity.ImflInBL, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="eBLProductGroupId"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Production</label>
+                    @Html.TextBoxFor(m => m.stockDetailsInBl.SpiritProduction, new { @class = "form-control allowDecimal", id = "txtspiritprod", @onchange = "getprodstock()" })
+                    @Html.ValidationMessageFor(m => m.stockDetailsInBl.SpiritProduction, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="etxtspiritprod"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Import</label>
+                    @Html.TextBoxFor(m => m.stockDetailsInBl.SpiritImport, new { @class = "form-control allowDecimal", id = "txtspiritimport", @onchange = "getprodstock()" })
+                    @Html.ValidationMessageFor(m => m.stockDetailsInBl.SpiritImport, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="etxtspiritimport"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Export</label>
+                    @Html.TextBoxFor(m => m.stockDetailsInBl.SpiritExport, new { @class = "form-control allowDecimal", id = "txtspiritexport", @onchange = "getprodstock()" })
+                    @Html.ValidationMessageFor(m => m.stockDetailsInBl.SpiritExport, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="etxtspiritexport"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Dispatched</label>
+                    @Html.TextBoxFor(m => m.stockDetailsInBl.Dispatched, new { @class = "form-control allowDecimal", id = "txtdispatched", @onchange = "getprodstock()" })
+                    @Html.ValidationMessageFor(m => m.stockDetailsInBl.Dispatched, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="etxtdispatched"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Closing Stock</label>
+                    @Html.TextBoxFor(m => m.stockDetailsInBl.SpiritClosingStock, new { @class = "form-control", id = "txtspiritclosing", @readonly = "readonly" })
+                    @Html.ValidationMessageFor(m => m.stockDetailsInBl.SpiritClosingStock, "", new { @class = "text-danger validation-message", id = "" })
+                    <span class="text-danger validation-message" id="etxtspiritclosing"></span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <button type="button" class="btn btn-success pull-right" id="btnAddStockBL" data-translate="Add" data-original-title="" title="">Add</button>
+                    <br /> <span class="text-danger validation-message" id="ebtnAddStockBL"></span>
+                </div>
+            </div>
+            <div class="">
+                <table id="grdStockBL" class="table display table-bordered dataTable no-footer dtr-inline">
+                    <thead>
+                        <tr style="text-align: center;">
+                            <th style="text-align: center" data-translate="SR.">SR.</th>
+                            <th style="text-align: center" data-translate="Product Group">Product Group</th>
+                            <th style="text-align: center" data-translate="Production">Production</th>
+                            <th style="text-align: center" data-translate="Import">Import</th>
+                            <th style="text-align: center" data-translate="Export">Export</th>
+                            <th style="text-align: center" data-translate="Dispatched">Dispatched</th>
+                            <th style="text-align: center" data-translate="Closing Stock">Closing Stock</th>
+                            <th style="text-align: center" data-translate="Action">Action</th>
+
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+            @*  <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">IMFL Production</label>
+    @Html.TextBoxFor(m => m.stockDetailsInBl.IMFLProduction, new { @class = "form-control", id="txtimfprod",@onchange="getimfprodstock()" })
+    @Html.ValidationMessageFor(m => m.stockDetailsInBl.IMFLProduction, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div>
+    <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">IMFL Dispatch</label>
+    @Html.TextBoxFor(m => m.stockDetailsInBl.IMFLDispatch, new { @class = "form-control",id="txtimfdispatch",@onchange="getimfprodstock()" })
+    @Html.ValidationMessageFor(m => m.stockDetailsInBl.IMFLDispatch, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div>
+
+    <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">Closing Stock</label>
+    @Html.TextBoxFor(m => m.stockDetailsInBl.IMFLClosingStock, new { @class = "form-control",id="txtimfclosing",@readonly = "readonly"})
+    @Html.ValidationMessageFor(m => m.stockDetailsInBl.IMFLClosingStock, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div>
+    <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">CL Production</label>
+    @Html.TextBoxFor(m => m.stockDetailsInBl.CLProduction, new { @class = "form-control",@onchange="getclprodstock()",id="txtclprod" })
+    @Html.ValidationMessageFor(m => m.stockDetailsInBl.CLProduction, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div>
+    <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">CL Dispatch</label>
+    @Html.TextBoxFor(m => m.stockDetailsInBl.CLDispatch, new { @class = "form-control",@onchange="getclprodstock()",id="txtcldispatch" })
+    @Html.ValidationMessageFor(m => m.stockDetailsInBl.CLDispatch, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div>
+    <div class="col-md-3">
+    <div class="form-group">
+    <label class="form-label mandatory" data-translate="">Closing Stock</label>
+    @Html.TextBoxFor(m => m.stockDetailsInBl.CLClosingStock, new { @class = "form-control",id="txtclclosing",@readonly = "readonly" })
+    @Html.ValidationMessageFor(m => m.stockDetailsInBl.CLClosingStock, "", new { @class = "text-danger validation-message", id = "" })
+
+    </div>
+    </div> *@
+            <div class="page-title">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>
+                            <span data-translate="">Details Of Income in last financial year (In Lacs Rs.)</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Bottling Fee </label>
+                    @Html.TextBoxFor(m => m.finYearIncomeDetails.BottlingFee, new { @class = "form-control numbers", id = "txtbotlfee", @onchange = "gettotal()" })
+                    @Html.ValidationMessageFor(m => m.finYearIncomeDetails.BottlingFee, "", new { @class = "text-danger validation-message", id = "" })
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Export Fee </label>
+                    @Html.TextBoxFor(m => m.finYearIncomeDetails.ExportFee, new { @class = "form-control numbers", id = "txtexportfee", @onchange = "gettotal()" })
+                    @Html.ValidationMessageFor(m => m.finYearIncomeDetails.ExportFee, "", new { @class = "text-danger validation-message", id = "" })
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Import Fee </label>
+                    @Html.TextBoxFor(m => m.finYearIncomeDetails.ImportFee, new { @class = "form-control numbers", id = "txtimportfee", @onchange = "gettotal()" })
+                    @Html.ValidationMessageFor(m => m.finYearIncomeDetails.ImportFee, "", new { @class = "text-danger validation-message", id = "" })
+
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Other Fee </label>
+                    @Html.TextBoxFor(m => m.finYearIncomeDetails.OtheFee, new { @class = "form-control numbers", id = "txtotherfee", @onchange = "gettotal()" })
+                    @Html.ValidationMessageFor(m => m.finYearIncomeDetails.OtheFee, "", new { @class = "text-danger validation-message", id = "" })
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label mandatory" data-translate="">Total </label>
+                    @Html.TextBoxFor(m => m.finYearIncomeDetails.Total, new { @class = "form-control", id = "txttotalfee", @readonly = "readonly" })
+
+                </div>
+            </div>
+        </div>
+        @if (Model.StageType != "I")
+        {
+            @Html.Partial("_FileUpload")
+        }
+
+
+        <h2>Applying For</h2>
+
+        //@Html.CheckBoxFor(m => m.licenseeIssuredUnit.l)
+        <div class="form-horizontal">
+            <h4>Select Rules</h4>
+            @for (int i = 2; i < Model.manufacturingUnitModel.CheckBoxItems.Count(); i++)
+            {
+
+                @Html.CheckBoxFor(m => m.manufacturingUnitModel.CheckBoxItems[i].Selected, new { @class = "flat", @Id = "check_" + i })
+
+                @Model.manufacturingUnitModel.CheckBoxItems[i].Text
+                @Html.HiddenFor(m => m.manufacturingUnitModel.CheckBoxItems[i].Text)
+
+                @Html.HiddenFor(m => m.manufacturingUnitModel.CheckBoxItems[i].Value)
+                <br />
+            }
+            <br /> <span class="text-danger validation-message" id="eCheckList"></span>
+
+
+        </div>
+
+
+        <br />
+        <br />
+        <br />
+        <input type="checkbox" id="checkClear" />
+        <span style="font-size:20px">
+            I / We certify that the information above is true, complete and correct as per Rules and I / We solely will be held responsible for any false / incorrect information
+        </span>
+    }
+    else
+    {
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="Manufacturing Unit Renewal">Manufacturing Unit Renewal</span>
+                        <button type="button" class="btn btn-primary pull-right" data-translate="Back" id="btnBack"> Back</button>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+
+                    <label data-translate="">Financial Year of Renewed License</label>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.FinanceYearName, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Name Of Main Unit</label>
+                    @Html.TextAreaFor(model => model.manufacturingUnitModel.MainUnitName, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Unit Type</label>
+                    @Html.TextAreaFor(model => model.manufacturingUnitModel.UnitTypeName, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Name Of Unit </label>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.UnitName, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Address Of Unit </label>
+                    @Html.TextAreaFor(model => model.manufacturingUnitModel.AddressOfUnit, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+        </div>
+
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="Rule Under Which License Has Been Issued To Unit">Rule Under Which License Has Been Issued To Unit</span>
+
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+
+                    <span data-translate="">Type Of Licensee </span>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.LicenceTypeName, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Rule</label>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.LicenceRuleName, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Date of Establishment Of Plant </label>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.EstablishmentOfPantDate, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Date of Commencement of Production  </label>
+                    @Html.TextAreaFor(model => model.licenseeIssuredUnit.CommencementOfProductionDate, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+
+        </div>
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="">Fee Details (In Rs.)</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    @* <label class="form-label mandatory" data-translate="">Production Type</label> *@
+                    <br />
+
+                    @if (@Model.FeeRequest != null)
+                    {
+                        <table class="table table-bordered table-responsive table-hover">
+                            <tr>
+                                <th>Fee Type</th>
+                                <th>GRN Number</th>
+                                <th>GRN Date</th>
+                                <th>Total Amount</th>
+                            </tr>
+                            @foreach (var item in Model.FeeRequest)
+                            {
+
+                                <tr>
+                                    <td> @Html.DisplayFor(m => item.FeeType) </td>
+                                    <td> @Html.DisplayFor(m => item.GRN) </td>
+                                    <td>@Html.DisplayFor(m => item.GRNDate)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Amount)</td>
+                                </tr>
+
+
+
+                            }
+                        </table>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="">Production Capacity</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Production Type</label>
+                    <br />
+
+                    @if (@Model.productionCapacity.lstprod != null)
+                    {
+                        <table class="table table-bordered table-responsive table-hover">
+                            <tr>
+                                <th>Product Type</th>
+                                <th>Product Group Name</th>
+                                <th>In BL</th>
+                                <th>In Case</th>
+                            </tr>
+                            @foreach (var item in @Model.productionCapacity.lstprod)
+                            {
+
+                                <tr>
+                                    <td> @Html.DisplayFor(m => item.ProductTypeName) </td>
+                                    <td> @Html.DisplayFor(m => item.ProductGroupName) </td>
+                                    <td>@Html.DisplayFor(m => item.ClInBl)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.ImflAndClInCases)</td>
+                                </tr>
+
+
+
+                            }
+                        </table>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="">Production Capacity Rajasthan Pollution Control Board</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+
+                    <br />
+
+                    @if (@Model.CTO.lstcto != null)
+                    {
+                        <table style="width:100%">
+                            <tr>
+                                <th>Product Type</th>
+                                <th>Product Group Name</th>
+                                <th>In BL</th>
+                                <th>In Case</th>
+                                <th>Issue Date</th>
+                                <th>Valid From</th>
+                                <th>Valid UpTo</th>
+                            </tr>
+                            @foreach (var item in @Model.CTO.lstcto)
+                            {
+
+                                <tr>
+                                    <td> @Html.DisplayFor(m => item.ProductTypeName) </td>
+                                    <td> @Html.DisplayFor(m => item.ProductGroupName) </td>
+                                    <td>@Html.DisplayFor(m => item.ClInBl)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.ImflAndClInCases)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.IssueDate)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.ValidFrom)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.ValidUpto)</td>
+                                </tr>
+
+
+
+                            }
+                        </table>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="">Stock Details In B.L.</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+
+                    <br />
+
+                    @if (@Model.stockDetailsInBl.lststock != null)
+                    {
+                        <table style="width:100%">
+                            <tr>
+                                <th>Product Category</th>
+                                <th>SPIRIT PRODUCTION</th>
+                                <th>Spirit Import</th>
+                                <th>Spirit Export</th>
+                                <th>Dispatched</th>
+                                <th>Closing Stock</th>
+
+                            </tr>
+                            @foreach (var item in @Model.stockDetailsInBl.lststock)
+                            {
+
+                                <tr>
+                                    <td> @Html.DisplayFor(m => item.ProductCategory) </td>
+                                    <td> @Html.DisplayFor(m => item.SpiritProduction) </td>
+                                    <td>@Html.DisplayFor(m => item.SpiritImport)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.SpiritExport)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.Dispatched)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.SpiritClosingStock)</td>
+
+                                </tr>
+
+
+
+                            }
+                        </table>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="">Details Of Income in last financial year (In Lacs Rs.)</span>
+
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+
+                    <span data-translate="">Botteling Fee</span>
+                    @Html.TextAreaFor(model => model.finYearIncomeDetails.BottlingFee, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Import Fee</label>
+                    @Html.TextAreaFor(model => model.finYearIncomeDetails.ImportFee, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Export Fee</label>
+                    @Html.TextAreaFor(model => model.finYearIncomeDetails.ExportFee, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label" data-translate="">Other Fee</label>
+                    @Html.TextAreaFor(model => model.finYearIncomeDetails.OtheFee, new { @readonly = "readonly", @class = "form-control clsZone", id = "txtConsignerAddress", oninput = "if (this.value.length > 255) this.value = this.value.slice(0, 255);" })
+                </div>
+            </div>
+
+        </div>
+
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="Applied Rules">Applied Rule</span>
+
+                    </h3>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+
+                    <br />
+
+                    @if (@Model.checkboxitems.lstrule != null)
+                    {
+                        @if (@Model.checkboxitems.lstrule != null)
+                        {
+                            int i = 1;
+                            <table class="table table-bordered table-responsive table-hover">
+                                <tr>
+                                    <th>Sl No.</th>
+                                    <th>Description</th>
+
+                                </tr>
+                                @foreach (var item in @Model.checkboxitems.lstrule)
+                                {
+
+                                    <tr>
+                                        <td> <label>@i</label> </td>
+                                        <td> @Html.DisplayFor(m => item.Descriptipn) </td>
+
+                                    </tr>
+
+                                    i = i + 1;
+
+                                }
+                            </table>
+                        }
+                    }
+
+
+                </div>
+            </div>
+        </div>
+        <div>
+            @Html.Partial("_FileUpload")
+        </div>
+    }
+
+    @if (Model.RoleName == "OIC UNIT")
+    {
+        <div>
+            @Html.Partial("_AEORemark", Model)
+        </div>
+    }
+    @if (Model.RoleName == "DEO_APPROVER")
+    {
+        
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12">
+                    <h3>
+                        <span data-translate="">OIC UNIT Details</span>
+                    </h3>
+                </div>
+            </div>
+        </div>
+        @foreach (var itm in Model.AeoRemark.lstAeoDetail)
+        {
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="">Laboratory Plant is Working Properly?</label>
+
+                        <br />
+                        <label>
+                            @if (itm.IsLab == 1)
+                            {
+                                <input type="radio" checked value="Yes" name="islab" disabled />
+                                <label class="form-label" data-translate="">Yes</label>
+                                <input type="radio" value="No" name="islab" disabled />
+                                <label class="form-label" data-translate="">No</label>
+
+                            }
+                            else
+                            {
+                                <input type="radio" value="Yes" name="islab" disabled />
+                                <label class="form-label" data-translate="">Yes</label>
+                                <input type="radio" checked name="islab" value="No" disabled />
+                                <label class="form-label" data-translate="">No</label>
+                            }
+
+                        </label>
+
+
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="">Web Cameras is Working Properly?</label>
+
+                        <br />
+                        @if (itm.ISWeb == 1)
+                        {
+                            <input type="radio" checked value="Yes" name="iswab" disabled />
+                            <label class="form-label" data-translate="">Yes</label>
+                            <input type="radio" value="No" name="iswab" disabled />
+                            <label class="form-label" data-translate="">No</label>
+
+                        }
+                        else
+                        {
+                            <input type="radio" value="Yes" name="iswab" disabled />
+                            <label class="form-label" data-translate="">Yes</label>
+                            <input type="radio" checked name="iswab" value="No" disabled />
+                            <label class="form-label" data-translate="">No</label>
+                        }
+
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="">(No. of) Cases</label>
+
+                        <br />
+                        @* @Html.LabelFor(model => itm.NoOfCAses, new { @class = "form-control aeo" }) *@
+                        <label class="form-label" data-translate="">@itm.NoOfCAses</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="">Remarks</label>
+
+                        <br />
+
+                        @* @Html.LabelFor(model => itm.Remark, new { @class = "form-control aeo" }) *@
+                        <label class="form-label" data-translate="">@itm.Remark</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="">Details of action taken regarding Dues against Unit :-</label>
+                        <br />
+
+
+                        <label class="form-label" data-translate="">@itm.ActionAgaistUnit</label>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="form-label" data-translate="">Remarks based on online application of unit and above information for renewal :-</label>
+                        <br />
+
+                        <label class="form-label" data-translate="">@itm.ReamrkBasedOnApplication</label>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    @* <label class="form-label mandatory" data-translate="">Details of Inspections</label> *@
+                </div>
+            </div>
+
+        </div>
+        @if (!string.IsNullOrEmpty(Model.AeoRemark.lstInsection[0].Date))
+        {
+            <div class="row">
+
+                <div class="">
+                    <table class="table display table-bordered dataTable no-footer dtr-inline">
+                        <thead>
+                            <tr style="text-align: center;">
+
+                                <th style="text-align: center" data-translate="Date of Inspections">Date of Inspections</th>
+                                <th style="text-align: center" data-translate="Details">Details</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.AeoRemark.lstInsection)
+                            {
+
+                                <tr>
+                                    <td> @Html.DisplayFor(m => item.Date) </td>
+                                    <td> @Html.DisplayFor(m => item.Detail) </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        }
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    @* <label class="form-label mandatory" data-translate="">No of Pending Dues(in RS.)</label> *@
+
+                </div>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.AeoRemark.lstPendingDues[0].Year))
+        {
+            <div class="row">
+
+                <div class="">
+                    <table class="table display table-bordered dataTable no-footer dtr-inline">
+                        <thead>
+                            <tr style="text-align: center;">
+                                <th style="text-align: center" data-translate="YEAR">YEAR</th>
+                                <th style="text-align: center" data-translate="PENDING AMOUNT">PENDING AMOUNT</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.AeoRemark.lstPendingDues)
+                            {
+
+                                <tr>
+                                    <td> @Html.DisplayFor(m => item.Year) </td>
+                                    <td> @Html.DisplayFor(m => item.Amount) </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-md-3">
+                <div class="form-group">
+                    @* <label class="form-label mandatory" data-translate="">No of FIR Cases Registered Against the Unit</label> *@
+
+                </div>
+            </div>
+        </div>
+        @if (!string.IsNullOrEmpty(Model.AeoRemark.lstFir[0].FirNo))
+        {
+            <div class="row">
+
+                <div class="">
+                    <table class="table display table-bordered dataTable no-footer dtr-inline">
+                        <thead>
+                            <tr style="text-align: center;">
+
+                                <th style="text-align: center" data-translate="FIR Number">FIR Number</th>
+                                <th style="text-align: center" data-translate="FIR Date">FIR Date</th>
+                                <th style="text-align: center" data-translate="FIR Status">FIR Status</th>
+                                <th style="text-align: center" data-translate="Court Stay">Court Stay</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.AeoRemark.lstFir)
+                            {
+
+                                <tr>
+                                    <td> @Html.DisplayFor(m => item.FirNo) </td>
+                                    <td> @Html.DisplayFor(m => item.Date) </td>
+                                    <td> @Html.DisplayFor(m => item.status) </td>
+                                    <td> @Html.DisplayFor(m => item.CourtStay) </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+        }
+
+        <div>
+            @Html.Partial("_FileUpload1")
+        </div>
+
+    }
+    @if (Model.RoleName == "DEO_APPROVER")
+    {
+        <div>
+            @Html.Partial("_DEORemark", Model)
+        </div>
+    }
+    @* <div>
+        @Html.Partial("_DEORemark", Model)
+    </div> *@
+
+    <div class="text-center">
+        <div class="text-center">
+            <button type="submit" id="btnSubmit" style="display:none" disabled="disabled" class="btn btn-success" data-translate="Save">Save</button>
+            <div class="text-center" style="margin-top: 10px;">
+                <div class="btn-group" id="divAction">
+                    <button class="btn btn-success dropdown-toggle" id="btnAction" disabled="disabled" type="button" data-toggle="dropdown" data-translate="Choose Action">
+                        Choose Action
+                    </button>
+
+                </div>
+                @* <button data-translate="Reset" type="button" id="btnReset" class="btn btn-danger" >Reset</button> *@
+
+            </div>
+        </div>
+
+    </div>
+
+}
+
+
+<form id="hiddenForm" method="post" action="@Url.Action("ManufactureUnitRenewal", "ManufactureUnitRenewal")">
+    <input type="hidden" id="hiddenRequestModel" name="requestModel" value="" />
+    <input type="hidden" id="hidenroleName" name="rolename" value="" />
+    <input type="hidden" id="hdnunitName" name="unitname" value="" />
+    <input type="hidden" id="hdnMainUnit" name="mainunitName" value="" />
+    <input type="hidden" id="hdnFinYear" class="hdnFinYear" name="model2" value="" />
+    <input type="hidden" id="hdnFinYear" class="hdnFinYear" name="FinYear" value="" />
+
+</form>
+<script>
+    $(function () {
+
+        $('#licenseeIssuredUnit_LicenseeRuleId').prop('disabled', true);
+        $('#licenseeIssuredUnit_ProductGroupId').prop('disabled', true);
+        $('#CTO_ProductGroupId').prop('disabled', true);
+        $('#BLProductGroupId').prop('disabled', true);
+
+        $('#checkClear').click(function () {
+            if ($(this).is(':checked')) {
+                // $('#btnSubmit').removeAttr('disabled');
+                $('#btnAction').removeAttr('disabled');
+                // $('#divAction').removeAttr('disabled');
+                // $('#btnAction').removeAttr('disabled');
+            } else {
+                // $('#btnSubmit').attr('disabled', 'disabled');
+                // $('#btnAction').attr('disabled');
+                $('#btnAction').attr('disabled', 'disabled');
+                // $('#btnAction').attr('disabled', 'disabled');
+            }
+        });
+    });
+    $(document).ready(function () {
+
+        var StageType = '@Model.StageType';
+
+
+
+        if (StageType == "I") {
+
+
+            //disable
+            $('.feedetails').show();
+            $('input, textarea, select').prop('disabled', true);
+            $('.Actionstyle').prop('disabled', false);
+            $('#licenseeIssuredUnit_ProductGroupId').prop('disabled', true).trigger("chosen:updated");
+            $('#ddlCity').prop('disabled', true).trigger("chosen:updated");
+            $('#ddlCircle').prop('disabled', true).trigger("chosen:updated");
+            $('#btnSaveDraftPhrmReg').hide();
+            $("#btnClose").hide();
+            $("#txtUserComments").prop('disabled', false);
+            $("#VerifyOTP").hide();
+            $("#divLicNo").show();
+            //$('#btnBack').hide();
+
+
+            //enable
+            $('.aeo').prop('disabled', false);
+            $('.deo').prop('disabled', false);
+            $('.hid').prop('disabled', false);
+        }
+
+        $('#btnBack').click(function () {
+            ;
+            if ($("#hdnStageId").val() == "0")
+                window.location.href = "../ManufactureUnitRenewal/ManufactureunitRenewalView";
+            else
+                window.location.href = "/Inbox/WFInbox";
+        });
+
+
+
+        $('#btnAddFee').click(function () {
+
+            var FeeTypeId = $('#renewalFeeDetails_FeeTypeId option:selected').val();
+            var FeeType = $('#renewalFeeDetails_FeeTypeId option:selected').text();
+            var LateFeeGRN = $('#lateFeeDetails_LateFeeGRN').val();
+            var LateFeeGRNDate = $('#lateFeeDetails_LateFeeGRNDate').val();
+
+            var LateFeeUploadChalan = $('#lateFeeDetails_LateFeeUploadChalan')[0].files[0];
+
+            var LateFeeDepositedAmount = $('#lateFeeDetails_LateFeeDepositedAmmount').val();
+
+
+            if (FeeTypeId == "0") {
+                $('#eFeeTypeId').text("Please select Fee Type");
+                return false;
+            }
+            else {
+                $('#eFeeTypeId').text("");
+            }
+            if (LateFeeGRN == "") {
+                $('#eLateFeeGRN').text("Please fill In GRN");
+                return false;
+            }
+            else {
+                $('#eLateFeeGRN').text("");
+            }
+            if (LateFeeGRNDate == "") {
+                $('#eLateFeeGRNDate').text("Please select GRN Date");
+                return false;
+            }
+            else {
+                $('#eLateFeeGRNDate').text("");
+            }
+            if (LateFeeDepositedAmount == "0") {
+                $('#eLateFeeDepositedAmmount').text("Please fill In total amount");
+                return false;
+            }
+            else {
+                $('#eLateFeeDepositedAmmount').text("");
+            }
+            if (LateFeeUploadChalan != undefined && String(LateFeeUploadChalan.name) != "" && String(LateFeeUploadChalan.name) != undefined && String(LateFeeUploadChalan.name) != null) {
+                $('#eLateFeeUploadChalan').text("");
+
+            }
+            else {
+                $('#eLateFeeUploadChalan').text("Please upload challan");
+                return false;
+            }
+
+            tmp = {
+                'GRN_NO': LateFeeGRN,
+                'Amount': parseInt(LateFeeDepositedAmount)
+
+            }
+            var isGRNVerify = false;
+            $.ajax({
+                type: "POST",
+                url: "../ManufactureUnitRenewal/GRNVerify",
+                data: { model: tmp },
+                async: false,
+                dataType: 'json',
+                success: function (data) {
+
+                    if (data.Status == "S") {
+
+                        isGRNVerify = true;
+                    }
+                    else {
+                        isGRNVerify = false;
+                    }
+                }
+            });
+
+            if (isGRNVerify == false) {
+                $('#eLateFeeGRN').text("Invalid GRN/Amount");
+                return false;
+            }
+            else {
+                $('#eLateFeeGRN').text("");
+            }
+            var data = $('#grdFee tbody').find('tr:last-child').find('td:first-child').text();
+            // Initialize a new object for the row data
+            if (data == "No data available in table" || data == "") {
+                data = 0;
+            }
+            var newRowData = {
+                "slno": parseInt(data) + 1, // Increment the slno for the new row
+                "FeeType": FeeTypeId + '_' + FeeType,
+                "LateFeeGRN": LateFeeGRN,
+                "LateFeeGRNDate": LateFeeGRNDate,
+                "LateFeeUploadChalan": LateFeeUploadChalan.name,
+                "LateFeeDepositedAmount": LateFeeDepositedAmount,
+
+            };
+            //for restrict duplicate row
+            var isAlreadyExist = false;
+            for (var i = 1; i <= parseInt(data); i++) {
+                var groupId = $('#' + 'FeeTypeId_' + i).text();
+                if (groupId != "" && groupId != undefined) {
+                    if (groupId == FeeTypeId) {
+                        isAlreadyExist = true;
+                    }
+                }
+
+            }
+            if (isAlreadyExist) {
+                $('#eFeeTypeId').text('This fee tye already added');
+            }
+            else {
+                //tableCTO.row.add(newRowData).draw();
+                tableFee.row.add(newRowData).draw();
+
+                $("#LateFeeUploadChalanFile_" + (parseInt(data) + 1)).prop("files", $('#lateFeeDetails_LateFeeUploadChalan').prop("files"));
+                // var x = $("#LateFeeUploadChalanFile_" + (parseInt(data) + 1))[0].files[0];
+                // var xx = x;
+            }
+        });
+
+
+        var tableFee = $('#grdFee').DataTable({
+
+            "columns": [
+                { "data": "slno", "autoWidth": true, "sortable": false },
+
+                {
+                    "data": "FeeType", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+
+                        var arr = data.split('_');
+                        var uniqueId = 'FeeType_' + row.slno;
+                        var uniqueId1 = 'FeeTypeId_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + arr[1] + "</label><label style='visibility:hidden;' class='form-label' id = '" + uniqueId1 + "'>" + arr[0] + "</label>";
+
+
+                    }
+                },
+                {
+                    "data": "LateFeeGRN", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'LateFeeGRN_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "LateFeeGRNDate", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'LateFeeGRNDate_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "LateFeeUploadChalan", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var SelectedFeeTypeId = $('#renewalFeeDetails_FeeTypeId option:selected').val();
+                        var uniqueId = 'LateFeeUploadChalan_' + row.slno;
+                        var uniqueId1 = 'LateFeeUploadChalanFile_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label><input style='visibility:hidden' type='file' id = '" + uniqueId1 + "' name='" + SelectedFeeTypeId + "_" + uniqueId1 + "'></input>";
+
+                    }
+                },
+                {
+                    "data": "LateFeeDepositedAmount", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'LateFeeDepositedAmount_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "addremovebutton", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = row.slno;
+                        return "<button class='removeRow btn btn-danger' data-id='" + uniqueId + "'>Remove</button>";
+                    }
+                }
+            ],
+            // "columnDefs": [
+            //     { "targets": [0], "render": function (data, type, row, meta) { return meta.row + 1; } }
+            // ],
+            "order": [[0, "asc"]],
+            "responsive": false,
+
+        });
+
+
+        $('#grdFee tbody').on('click', 'button.removeRow', function (e) {
+            e.preventDefault();
+            var rowsCount = tableFee.rows().count();
+            var index = $(this).closest("tr").index();
+            if (rowsCount > 0) {
+                tableFee.row(parseInt(index)).remove().draw();
+            }
+            var rowsCount = tableFee.rows().count();
+            if (rowsCount == 0) {
+
+                $('#hdnJsonFee').val("");
+            }
+
+        });
+
+
+
+
+        $('#btnAddStockBL').click(function () {
+
+            var BLProductGroupId = $('#BLProductGroupId option:selected').val();
+            var BLProductGroup = $('#BLProductGroupId option:selected').text();
+            var spiritprod = $('#txtspiritprod').val();
+            var txtspiritimport = $('#txtspiritimport').val();
+            var txtspiritexport = $('#txtspiritexport').val();
+            var txtspiritclosing = $('#txtspiritclosing').val();
+            var txtdispatched = $('#txtdispatched').val();
+
+
+            if (BLProductGroupId == "0") {
+                $('#eBLProductGroupId').text("Please select product group");
+                return false;
+            }
+            else {
+                $('#eBLProductGroupId').text("");
+            }
+            if (spiritprod == "" || spiritprod == "0") {
+                $('#etxtspiritprod').text("Please fill In Production");
+                return false;
+            }
+            else {
+                $('#etxtspiritprod').text("");
+            }
+            // if (txtspiritimport == "") {
+            //     $('#etxtspiritimport').text("Please fill In import");
+            //     return false;
+            // }
+            // else {
+            //     $('#etxtspiritimport').text("");
+            // }
+            // if (txtspiritexport == "") {
+            //     $('#etxtspiritexport').text("Please fill In export");
+            //     return false;
+            // }
+            // else {
+            //     $('#etxtspiritexport').text("");
+            // }
+            if (parseInt(txtspiritclosing) < 0) {
+                $('#etxtspiritclosing').text("Closing stock should be greater than or equal to zero");
+                return false;
+            }
+            else {
+                $('#etxtspiritclosing').text("");
+            }
+            var data = $('#grdStockBL tbody').find('tr:last-child').find('td:first-child').text();
+            // Initialize a new object for the row data
+            if (data == "No data available in table" || data == "") {
+                data = 0;
+            }
+            var newRowData = {
+                "slno": parseInt(data) + 1, // Increment the slno for the new row
+                "BLProductGroup": BLProductGroupId + '_' + BLProductGroup,
+                "spiritprod": spiritprod,
+                "txtspiritimport": txtspiritimport,
+                "txtspiritexport": txtspiritexport,
+                "txtdispatched": txtdispatched,
+                "txtspiritclosing": txtspiritclosing
+
+
+            };
+            //for restrict duplicate row
+            var isAlreadyExist = false;
+            for (var i = 1; i <= parseInt(data); i++) {
+                var groupId = $('#' + 'BLProductGroupId_' + i).text();
+                if (groupId != "" && groupId != undefined) {
+                    if (groupId == BLProductGroupId) {
+                        isAlreadyExist = true;
+                    }
+                }
+
+            }
+            if (isAlreadyExist) {
+                $('#eBLProductGroupId').text('This group already added');
+            }
+            else {
+                //tableCTO.row.add(newRowData).draw();
+                tableStockBL.row.add(newRowData).draw();
+            }
+        });
+
+
+        var tableStockBL = $('#grdStockBL').DataTable({
+
+            "columns": [
+                { "data": "slno", "autoWidth": true, "sortable": false },
+
+                {
+                    "data": "BLProductGroup", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+
+                        var arr = data.split('_');
+                        var uniqueId = 'BLProductGroup_' + row.slno;
+                        var uniqueId1 = 'BLProductGroupId_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + arr[1] + "</label><label style='visibility:hidden;' class='form-label' id = '" + uniqueId1 + "'>" + arr[0] + "</label>";
+
+
+                    }
+                },
+                {
+                    "data": "spiritprod", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'spiritprod_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "txtspiritimport", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'txtspiritimport_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "txtspiritexport", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'txtspiritexport_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "txtdispatched", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'txtdispatched_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "txtspiritclosing", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'txtspiritclosing_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "addremovebutton", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = row.slno;
+                        return "<button class='removeRow btn btn-danger' data-id='" + uniqueId + "'>Remove</button>";
+                    }
+                }
+
+            ],
+            // "columnDefs": [
+            //     { "targets": [0], "render": function (data, type, row, meta) { return meta.row + 1; } }
+            // ],
+            "order": [[0, "asc"]],
+            "responsive": false,
+            // "initComplete": function (settings, json) {
+            //     if (json && json.data && json.data.length === 0) {
+            //         // If the received data is empty, add a new row
+            //         tableCTO.row.add({
+            //             "slno": 1,
+            //             "typeofspirit": "",
+            //             "ltrbl": "",
+            //             "addbutton": "",
+            //             "removebutton": ""
+            //         }).draw();
+            //     } else {
+            //         // If the received data is not empty, hide the add/remove buttons
+            //         $('.addRow, .removeRow').hide();
+            //     }
+            // }
+        });
+        $('#grdStockBL tbody').on('click', 'button.removeRow', function (e) {
+            e.preventDefault();
+            var rowsCount = tableStockBL.rows().count();
+            var index = $(this).closest("tr").index();
+            if (rowsCount > 0) {
+                tableStockBL.row(parseInt(index)).remove().draw();
+            }
+            var rowsCount = tableStockBL.rows().count();
+            if (rowsCount == 0) {
+                
+                $('#hdnJsonStockBL').val("");
+            }
+            
+        });
+
+        LoadActionDetails();
+
+
+
+        $('.flat').click(function () {
+            
+            $('#eCheckList').text('');
+            var isAtleastOneCheck = false;
+            var count = '@Model.manufacturingUnitModel.CheckBoxItems.Count()';
+            for (var i = 1; i <= count; i++) {
+
+                var isChecked = $('#check_' + i).is(":checked");
+                if (isChecked) {
+                    isAtleastOneCheck = true;
+                }
+
+            }
+            
+            if (isAtleastOneCheck == false) {
+                $('#hdnJsonCheckBox').val("");
+            }
+
+        });
+        $('#ddlmainunit').change(function () {
+            debugger
+            var licenseeTypeId = $(this).val();
+            if(licenseeTypeId == "0")
+            {
+                $('#licenseeIssuredUnit_LicenseeRuleId').prop('disabled', true);
+                $('#licenseeIssuredUnit_ProductGroupId').prop('disabled', true);
+                $('#CTO_ProductGroupId').prop('disabled', true);
+                $('#BLProductGroupId').prop('disabled', true);
+            }
+            else{
+                $.ajax({
+                    url: '/ManufactureUnitRenewal/ManufactureUnitRenewal/GetRules',
+                    type: "POST",
+
+                    data: { LicenseTypeId: licenseeTypeId },
+
+                    async: false,
+                    success: function (data) {
+                        debugger
+                        var strRule = "";
+                        var strGroup = "";
+                        for (var i = 0; i < data.licenseeIssuredUnit.lstLicenseeRule.length; i++) {
+                            strRule += '<option value="' + data.licenseeIssuredUnit.lstLicenseeRule[i].Value + '">' + data.licenseeIssuredUnit.lstLicenseeRule[i].Text + '</option>';
+
+                        }
+                        for (var i = 0; i < data.licenseeIssuredUnit.lstProductGroup.length; i++) {
+
+                            strGroup += '<option value="' + data.licenseeIssuredUnit.lstProductGroup[i].Value + '">' + data.licenseeIssuredUnit.lstProductGroup[i].Text + '</option>';
+                        }
+                        $('#licenseeIssuredUnit_LicenseeRuleId').prop('disabled', false);
+                        $('#licenseeIssuredUnit_ProductGroupId').prop('disabled', false);
+                        $('#CTO_ProductGroupId').prop('disabled', false);
+                        $('#BLProductGroupId').prop('disabled', false);
+
+                        $('#licenseeIssuredUnit_LicenseeRuleId').html(strRule);
+                        $('#licenseeIssuredUnit_ProductGroupId').html(strGroup);
+                        $('#CTO_ProductGroupId').html(strGroup);
+                        $('#BLProductGroupId').html(strGroup);
+                    }
+                });
+            }
+            
+        });
+
+        $('#btnSubmit').click(function () {
+            var StageType = '@Model.StageType';
+
+            if (StageType != "I") {
+                //Supplier Level
+
+
+                //1) Manufacturing Unit Renewal
+
+                var FinanceYear = $('#licenseeIssuredUnit_FinanceYear').val();
+                var MainUnitNameId = $('#manufacturingUnitModel_MainUnitNameId').val();
+                var UnitTypeName = $('#manufacturingUnitModel_UnitTypeName').val();
+                var ManufacturUnit = $('#ddlManufacturUnit').val();
+
+
+                if (FinanceYear == "0") {
+                    $('#licenseeIssuredUnit_FinanceYear').focus();
+                    $('#eFinanceYear').text("Select Finance Year");
+                    return false;
+                }
+                else {
+                    $('#eFinanceYear').text("");
+                }
+                if (MainUnitNameId == "0") {
+                    $('#manufacturingUnitModel_MainUnitNameId').focus();
+                    $('#eMainUnitNameId').text("Select Main Unit Name");
+                    return false;
+                }
+                else {
+                    $('#eMainUnitNameId').text("");
+                }
+
+                var isChecked = $('#manufacturingUnitModel_UnitTypeName').is(":checked");
+                if (isChecked) {
+                    $('#eUnitTypeName').text("");
+                }
+                else {
+                    $('#manufacturingUnitModel_UnitTypeName').focus();
+                    $('#eUnitTypeName').text("Select Unit Type");
+                    return false;
+                }
+                if (ManufacturUnit == "0") {
+                    $('#ddlManufacturUnit').focus();
+                    $('#eUnitNameId').text("Select Manufactur Unit");
+                    return false;
+                }
+                else {
+                    $('#eUnitNameId').text("");
+                }
+
+
+
+                //2)Rule Under Which License Has Been Issued To Unit
+
+
+                var ddlmainunit = $('#ddlmainunit').val();
+                var LicenseeRuleId = $('#licenseeIssuredUnit_LicenseeRuleId').val();
+                var EstablishmentOfPantDate = $('#licenseeIssuredUnit_EstablishmentOfPantDate').val();
+                var CommencementOfProductionDate = $('#licenseeIssuredUnit_CommencementOfProductionDate').val();
+
+                if (ddlmainunit == "0") {
+                    $('#ddlmainunit').focus();
+                    $('#eLicenseeType').text("Select Licensee Type");
+                    return false;
+                }
+                else {
+                    $('#eLicenseeType').text("");
+                }
+
+                if (LicenseeRuleId == "0") {
+                    $('#licenseeIssuredUnit_LicenseeRuleId').focus();
+                    $('#eLicenseeRuleId').text("Select Licensee Rule");
+                    return false;
+                }
+                else {
+                    $('#eLicenseeRuleId').text("");
+                }
+
+                if (EstablishmentOfPantDate == "") {
+                    $('#licenseeIssuredUnit_EstablishmentOfPantDate').focus();
+                    $('#eEstablishmentOfPantDate').text("Select Establishment Of Plant Date");
+                    return false;
+                }
+                else {
+                    $('#eEstablishmentOfPantDate').text("");
+                }
+
+                if (CommencementOfProductionDate == "") {
+                    $('#licenseeIssuredUnit_CommencementOfProductionDate').focus();
+                    $('#eCommencementOfProductionDate').text("Select Commencement of Production Date");
+                    return false;
+                }
+                else {
+                    $('#eCommencementOfProductionDate').text("");
+                }
+
+                //3)Fee Details (In Rs.)
+                if (SaveFeeJson()) {
+                    $('#ebtnAddFee').text("");
+                }
+                else {
+                    $('#ebtnAddFee').text("Please Add Fee Details");
+                    $('#renewalFeeDetails_FeeTypeId').focus();
+                    return false;
+                }
+
+
+                //4) Production Capacity
+
+                
+                if (SaveProductionCapacityJson()) {
+                    $('#ebtnAddProductionCapacity').text("");
+                }
+                else {
+                    $('#ebtnAddProductionCapacity').text("Please Add Production Capacity Details");
+                    $('#productionCapacity_ProductionTypeName').focus();
+                    return false;
+                }
+
+                //5) Production Capacity Rajasthan Pollution Control Board
+
+                if (SaveCTOJson()) {
+                    $('#ebtnAddCTO').text("");
+                }
+                else {
+                    $('#ebtnAddCTO').text("Please Add Production Capacity Rajasthan Pollution Control Board Details");
+                    $('#CTO_ProductionTypeName').focus();
+                    return false;
+                }
+
+                //6) Stock Details In B.L.
+                if (SaveStockBLJson()) {
+                    $('#ebtnAddStockBL').text("");
+                }
+                else {
+                    $('#ebtnAddStockBL').text("Please Add Stock Details In B.L. Details");
+                    $('#BLProductGroupId').focus();
+                    return false;
+                }
+
+
+                //7) Details Of Income In Last Financial Year (In Lacs Rs.)
+
+
+
+
+
+                if (!ValidateFiles()) {
+                    return false
+                }
+
+                if (GetSelectedCheckBoxList()) {
+                    $('#eCheckList').text("");
+                }
+                else {
+                    $('#eCheckList').text("Please select atleast one rule");
+                    $('#check_2').focus();
+                    return false;
+                }
+                //SaveProductionCapacityJson();
+                //SaveCTOJson();
+                //SaveStockBLJson();
+                // GetSelectedCheckBoxList();
+
+
+                var str = "";
+                var count = '@Model.manufacturingUnitModel.CheckBoxItems.Count()';
+                var sr = 1;
+                for (var i = 1; i <= count; i++) {
+
+                    var isChecked = $('#check_' + i).is(":checked");
+                    if (isChecked) {
+                        str += '<li style="display: block;">(' + sr + ')  ' + $('#manufacturingUnitModel_CheckBoxItems_' + i + '__Text').val() + '</li>';
+                        sr = sr + 1;
+                    }
+
+                }
+
+                str += '<br/>Do you want to send it to OIC?';
+
+                Swal.fire({
+                    icon: 'success',
+                    text: 'Are You Sure, Application Send to OIC',
+                    html: str,
+                    type: "success",
+                    showDenyButton: true,
+                    confirmButtonText: "Yes",
+                    denyButtonText: `No`
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+
+                    if (result.isConfirmed) {
+                        $("#formmfgunitrenewal").submit();
+                    }
+                });
+
+            }
+            else {
+                //At OIC and DEO Level
+                $("#formmfgunitrenewal").submit();
+            }
+
+
+        });
+
+
+
+
+
+
+        $('#CTO_ValidFrom').datepicker({
+            dateFormat: "dd-M-yy",
+            onSelect: function (selected, evnt) {
+                
+                var currDate = new Date(selected);
+                var maxDate = currDate.setFullYear(currDate.getFullYear() + 10);
+                $('#CTO_ValidUpto').datepicker("option", "minDate", selected);
+                $('#CTO_ValidUpto').datepicker("option", "maxDate", currDate);
+                $('#CTO_ValidUpto').prop('disabled', false);
+
+            }
+
+        });
+        $('#CTO_ValidUpto').datepicker({
+            dateFormat: "dd-M-yy",
+
+        });
+        $('#lateFeeDetails_LateFeeGRNDate').datepicker({
+            dateFormat: "dd-M-yy",
+            minDate: "01-apr-2023"
+
+        });
+        $('#CTO_IssueDate').datepicker({
+            dateFormat: "dd-M-yy",
+
+        });
+        $('#CTO_ValidUpto').prop('disabled', true);
+
+        var tableCTO = $('#grdCTO').DataTable({
+
+            "columns": [
+                { "data": "slno", "autoWidth": true, "sortable": false },
+                {
+                    "data": "ProductionTypeName", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+
+                        var uniqueId = 'CTO_ProductionTypeName_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "ProductGroupName", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var arr = data.split('_');
+                        var uniqueId = 'CTO_ProductGroupName_' + row.slno;
+                        var uniqueId1 = 'CTO_ProductGroupId_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + arr[1] + "</label><label style='visibility:hidden;' class='form-label' id = '" + uniqueId1 + "'>" + arr[0] + "</label>";
+
+
+                    }
+                },
+                {
+                    "data": "ProductionClInBl", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'CTO_ProductionClInBl_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "ProductionImflAndClInBl", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'CTO_ProductionImflAndClInBl_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "IssueDate", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'CTO_IssueDate_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "ValidFrom", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'CTO_ValidFrom_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "ValidUpto", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'CTO_ValidUpto_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "addremovebutton", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = row.slno;
+                        return "<button class='removeRow btn btn-danger' data-id='" + uniqueId + "'>Remove</button>";
+                    }
+                }
+
+            ],
+            // "columnDefs": [
+            //     { "targets": [0], "render": function (data, type, row, meta) { return meta.row + 1; } }
+            // ],
+            "order": [[0, "asc"]],
+            "responsive": false,
+
+        });
+        $('#grdCTO tbody').on('click', 'button.removeRow', function (e) {
+            e.preventDefault();
+            var rowsCount = tableCTO.rows().count();
+            var index = $(this).closest("tr").index();
+            if (rowsCount > 0) {
+                tableCTO.row(parseInt(index)).remove().draw();
+            }
+            var rowsCount = tableCTO.rows().count();
+            if (rowsCount == 0) {
+                $('#tdCTObl').text("");
+                $('#tdCTOcase').text("");
+                $('#hdnJsonCTO').val("");
+            }
+            else {
+                var totalBL = 0;
+                var totalCase = 0;
+                var data = $('#grdCTO tbody').find('tr:last-child').find('td:first-child').text();
+                for (var i = 1; i <= parseInt(data); i++) {
+                    var bl = $('#' + 'CTO_ProductionClInBl_' + i).text();
+                    if (bl != "" && bl != undefined) {
+                        totalBL = totalBL + parseInt(bl);
+                    }
+                    var cases = $('#' + 'CTO_ProductionImflAndClInBl_' + i).text();
+                    if (cases != "" && cases != undefined) {
+                        totalCase = totalCase + parseInt(cases);
+                    }
+                }
+
+                $('#tdCTObl').text("Total (In B.L.) : " + totalBL);
+                $('#tdCTOcase').text("Total (In Cases) : " + totalCase);
+            }
+        });
+        $('#btnAddCTO').click(function () {
+
+            var ProductionTypeName = $('#CTO_ProductionTypeName:checked').val();
+            var ProductGroupId = $('#CTO_ProductGroupId option:selected').val();
+            var ProductGroupName = $('#CTO_ProductGroupId option:selected').text();
+            var ProductionClInBl = $('#CTO_ClInBl').val();
+            var ProductionImflAndClInBl = $('#CTO_ImflAndClInBl').val();
+            var IssueDate = $('#CTO_IssueDate').val();
+            var ValidFrom = $('#CTO_ValidFrom').val();
+            var ValidUpto = $('#CTO_ValidUpto').val();
+
+
+            if (ProductionTypeName == undefined) {
+
+                $('#eCTOTypeName').text("Please choose production type");
+                return false;
+            }
+            else {
+                $('#eCTOTypeName').text("");
+            }
+            if (ProductGroupId == "0") {
+                $('#eCTOroductGroup').text("Please select product group");
+                return false;
+            }
+            else {
+                $('#eCTOroductGroup').text("");
+            }
+            // if (ProductionClInBl == "") {
+            //     $('#eCTOClInBl').text("Please fill In B.L.");
+            //     return false;
+            // }
+            // else {
+            //     $('#eCTOClInBl').text("");
+            // }
+            if (ProductionImflAndClInBl == "" && ProductionClInBl == "") {
+                $('#eCTOImflAndClInBl').text("Please fill In B.L. or In Cases");
+                return false;
+            }
+            else {
+                $('#eCTOImflAndClInBl').text("");
+            }
+            if (IssueDate == "") {
+                $('#eIssueDate').text("Please select Issue Date");
+                return false;
+            }
+            else {
+                $('#eIssueDate').text("");
+            }
+            if (ValidFrom == "") {
+                $('#eCTOValidFrom').text("Please select Valid From Date");
+                return false;
+            }
+            else {
+                $('#eCTOValidFrom').text("");
+            }
+            if (ValidUpto == "") {
+                $('#eCTOValidUpto').text("Please select Valid Upto Date");
+                return false;
+            }
+            else {
+                $('#eCTOValidUpto').text("");
+            }
+
+
+            var data = $('#grdCTO tbody').find('tr:last-child').find('td:first-child').text();
+            // Initialize a new object for the row data
+            if (data == "No data available in table") {
+                data = 0;
+            }
+
+            var newRowData = {
+                "slno": parseInt(data) + 1, // Increment the slno for the new row
+                "ProductionTypeName": ProductionTypeName,
+                "ProductGroupName": ProductGroupId + '_' + ProductGroupName,
+                "ProductionClInBl": ProductionClInBl,
+                "ProductionImflAndClInBl": ProductionImflAndClInBl,
+                "IssueDate": IssueDate,
+                "ValidFrom": ValidFrom,
+                "ValidUpto": ValidUpto,
+                "addremovebutton": ""
+            };
+
+
+            //for restrict duplicate row
+            var isAlreadyExist = false;
+            for (var i = 1; i <= parseInt(data); i++) {
+                var groupId = $('#' + 'CTO_ProductGroupId_' + i).text();
+                if (groupId != "" && groupId != undefined) {
+                    if (groupId == ProductGroupId) {
+                        isAlreadyExist = true;
+                    }
+                }
+
+            }
+            if (isAlreadyExist) {
+                $('#eCTOroductGroup').text('This group already added');
+            }
+            else {
+                tableCTO.row.add(newRowData).draw();
+
+                var totalBL = 0;
+                var totalCase = 0;
+                for (var i = 1; i <= parseInt(data) + 1; i++) {
+                    var bl = $('#' + 'CTO_ProductionClInBl_' + i).text();
+                    if (bl != "" && bl != undefined) {
+                        totalBL = totalBL + parseInt(bl);
+                    }
+                    var cases = $('#' + 'CTO_ProductionImflAndClInBl_' + i).text();
+                    if (cases != "" && cases != undefined) {
+                        totalCase = totalCase + parseInt(cases);
+                    }
+                }
+
+                $('#tdCTObl').text("Total (In B.L.) : " + totalBL);
+                $('#tdCTOcase').text("Total (In Cases) : " + totalCase);
+            }
+
+
+
+        });
+
+
+
+        var tableProductionCapacity = $('#grdProductionCapacity').DataTable({
+
+            "columns": [
+                { "data": "slno", "autoWidth": true, "sortable": false },
+                {
+                    "data": "ProductionTypeName", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'ProductionCapacity_ProductionTypeName_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                // {
+                //     "data": "ProductGroupId", "autoWidth": true, "sortable": false, /* "visible": false, */
+                //     "render": function (data, type, row) {
+                //         var uniqueId = 'ProductionCapacity_ProductGroupId_' + row.slno;
+                //         return "<label style='display:none;' class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                //     }
+                // },
+                {
+                    "data": "ProductGroupName", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var arr = data.split('_');
+                        var uniqueId = 'ProductionCapacity_ProductGroupName_' + row.slno;
+                        var uniqueId1 = 'ProductionCapacity_ProductGroupId_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + arr[1] + "</label><label style='visibility:hidden;' class='form-label' id = '" + uniqueId1 + "'>" + arr[0] + "</label>";
+
+                    }
+                },
+                {
+                    "data": "ProductionClInBl", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'ProductionCapacity_ProductionClInBl_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "ProductionImflAndClInBl", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = 'ProductionCapacity_ProductionImflAndClInBl_' + row.slno;
+                        return "<label class='form-label' id = '" + uniqueId + "'>" + data + "</label>";
+
+                    }
+                },
+                {
+                    "data": "addremovebutton", "autoWidth": true, "sortable": false,
+                    "render": function (data, type, row) {
+                        var uniqueId = row.slno;
+                        return "<button class='removeRow btn btn-danger' data-id='" + uniqueId + "'>Remove</button>";
+                    }
+                }
+            ],
+            // "columnDefs": [
+            //     { "targets": [0], "render": function (data, type, row, meta) { return meta.row + 1; } }
+            // ],
+            "order": [[0, "asc"]],
+            "responsive": false,
+            // "initComplete": function (settings, json) {
+            //     if (json && json.data && json.data.length === 0) {
+            //         // If the received data is empty, add a new row
+            //         tableProductionCapacity.row.add({
+            //             "slno": 1,
+            //             "typeofspirit": "",
+            //             "ltrbl": "",
+            //             "addbutton": "",
+            //             "removebutton": ""
+            //         }).draw();
+            //     } else {
+            //         // If the received data is not empty, hide the add/remove buttons
+            //         $('.addRow, .removeRow').hide();
+            //     }
+            // }
+        });
+        $('#grdProductionCapacity tbody').on('click', 'button.removeRow', function (e) {
+            e.preventDefault();
+            var rowsCount = tableProductionCapacity.rows().count();
+            var index = $(this).closest("tr").index();
+
+            if (rowsCount > 0) {
+                tableProductionCapacity.row(parseInt(index)).remove().draw();
+
+                var rowsCount = tableProductionCapacity.rows().count();
+                var totalBL = 0;
+                var totalCase = 0;
+                if (rowsCount == 0) {
+                    $('#prodBL').text("");
+                    $('#prodCases').text("");
+                    $('#hdnJsonProductCapacity').text("");
+                }
+                else {
+                    var data = $('#grdProductionCapacity tbody').find('tr:last-child').find('td:first-child').text();
+                    for (var i = 1; i <= parseInt(data); i++) {
+                        var bl = $('#' + 'ProductionCapacity_ProductionClInBl_' + i).text();
+                        if (bl != "" && bl != undefined) {
+                            totalBL = totalBL + parseInt(bl);
+                        }
+                        var cases = $('#' + 'ProductionCapacity_ProductionImflAndClInBl_' + i).text();
+                        if (cases != "" && cases != undefined) {
+                            totalCase = totalCase + parseInt(cases);
+                        }
+                    }
+
+                    $('#prodBL').text("Total (In B.L.) : " + totalBL);
+                    $('#prodCases').text("Total (In Cases) : " + totalCase);
+                }
+
+
+            }
+        });
+
+        $('#btnAdd').click(function () {
+
+            var ProductionTypeName = $('#productionCapacity_ProductionTypeName:checked').val();
+            var ProductGroupId = $('#licenseeIssuredUnit_ProductGroupId option:selected').val();
+            var ProductGroupName = $('#licenseeIssuredUnit_ProductGroupId option:selected').text();
+            var ProductionClInBl = $('#productionCapacity_ClInBl').val();
+            var ProductionImflAndClInBl = $('#productionCapacity_ImflAndClInBl').val();
+
+
+            if (ProductionTypeName == undefined) {
+                $('#ePCProductionType').text("Please choose production type");
+                return false;
+            }
+            else {
+                $('#ePCProductionType').text("");
+            }
+            if (ProductGroupId == "0") {
+                $('#ePCProductGroup').text("Please select product group");
+                return false;
+            }
+            else {
+                $('#ePCProductGroup').text("");
+            }
+            // if (ProductionClInBl == "") {
+            //     $('#ePCClInBl').text("Please fill In B.L.");
+            //     return false;
+            // }
+            // else {
+            //     $('#ePCClInBl').text("");
+            // }
+            if (ProductionImflAndClInBl == "" && ProductionClInBl == "") {
+                $('#ePCImflAndClInBl').text("Please fill In B.L. or In Cases");
+                return false;
+            }
+            else {
+                $('#ePCImflAndClInBl').text("");
+            }
+
+            var data = $('#grdProductionCapacity tbody').find('tr:last-child').find('td:first-child').text();
+            // Initialize a new object for the row data
+            if (data == "No data available in table") {
+                data = 0;
+            }
+
+            var newRowData = {
+                "slno": parseInt(data) + 1, // Increment the slno for the new row
+                "ProductionTypeName": ProductionTypeName,
+                // "ProductGroupId": ProductGroupId,
+                "ProductGroupName": ProductGroupId + '_' + ProductGroupName,
+                "ProductionClInBl": ProductionClInBl,
+                "ProductionImflAndClInBl": ProductionImflAndClInBl,
+                "addremovebutton": ""
+            };
+            //for restrict duplicate row
+            var isAlreadyExist = false;
+            for (var i = 1; i <= parseInt(data); i++) {
+                var groupId = $('#' + 'ProductionCapacity_ProductGroupId_' + i).text();
+                if (groupId != "" && groupId != undefined) {
+                    if (groupId == ProductGroupId) {
+                        isAlreadyExist = true;
+                    }
+                }
+
+            }
+            if (isAlreadyExist) {
+                $('#ePCProductGroup').text('This group already added');
+            }
+            else {
+                tableProductionCapacity.row.add(newRowData).draw();
+
+
+                var totalBL = 0;
+                var totalCase = 0;
+                for (var i = 1; i <= parseInt(data) + 1; i++) {
+                    var bl = $('#' + 'ProductionCapacity_ProductionClInBl_' + i).text();
+                    if (bl != "" && bl != undefined) {
+                        totalBL = totalBL + parseInt(bl);
+                    }
+                    var cases = $('#' + 'ProductionCapacity_ProductionImflAndClInBl_' + i).text();
+                    if (cases != "" && cases != undefined) {
+                        totalCase = totalCase + parseInt(cases);
+                    }
+                }
+
+                $('#prodBL').text("Total (In B.L.) : " + totalBL);
+                $('#prodCases').text("Total (In Cases) : " + totalCase);
+            }
+
+        });
+
+
+
+    });
+
+    function LoadActionDetails() {
+        
+        $.ajax({
+            url: '@Url.Action("FetchActionDetails", "WorkFlowRule")',
+            type: "GET",
+
+            data: { FormCode: $("#hdnFormCode").val(), StageType: $("#hdnStageType").val(), StageId: $("#hdnStageId").val(), RoleId: $("#hdnRoleOrUserId").val(), RoleType: $("#hdnRoleOrUserType").val() },
+
+            async: false,
+            success: function (data) {
+                ;
+                if (data.ActionTypes != null) {
+                    ;
+                    if (data.ActionTypes.length > 0) {
+                        var s = '';
+                        if (data.ActionTypes.length > 0) {
+                            $("#divAction").append("<ul class='dropdown-menu dropdown-success' id='ulAction'></ul>");
+                        }
+                        for (var i = 0; i < data.ActionTypes.length; i++) {
+                            s = "<li><input type='button' class='Actionstyle' value='" + data.ActionTypes[i]["Text"] + "' onclick=LogData('" + data.ActionTypes[i]["Value"] + "','" + data.ActionTypes[i]["Text"] + "') /></li>"
+                            $("#divAction ul").append(s);
+
+                        }
+                        $("#divAction").show();
+                    }
+                    else {
+                        $("#divAction").hide();
+                    }
+                }
+
+            }
+        });
+
+    }
+
+    function LogData(_actionType, _actionName) {
+
+        var bFalse = true;
+        if (_actionType != '') {
+            if (_actionType.split("~")[1] == "C") { //cancel
+
+                Swal.fire({
+                    icon: 'success',
+                    text: 'Are You Sure, You Want to Reject it',
+                    type: "success",
+                    showDenyButton: true,
+                    confirmButtonText: "Yes",
+                    denyButtonText: `No`
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/WorkFlowRule/UpdateWorkFlowCancelDet",
+                            data: { WorkFlowObjectId: $("#hdnWorkFlowObjectId").val(), TransactionId: parseInt($("#hdnTransactionId").val()), FormCode: $("#hdnFormCode").val() },
+                            async: false,
+                            dataType: 'json',
+                            success: function (data) {
+
+                                if (data.statusId == 1) {
+
+                                    swal({
+                                        title: '',
+                                        text: data.message,
+                                        type: "success"
+                                    }).then(function () {
+                                        window.location.href = '/Inbox/WFInbox';
+                                    });
+                                    bFalse = false;
+                                    return false;
+                                }
+                                else {
+
+                                    swal({
+                                        title: '',
+                                        text: data.message,
+                                        type: "warning"
+                                    }).then(function () {
+                                        window.location.href = '/Inbox/WFInbox';
+                                    });
+                                    bFalse = false;
+                                    return false;
+                                }
+                            }
+                        });
+                    }
+                });
+
+
+
+
+            }
+            else {
+
+                $("#hdnActionId").val(_actionType.split("~")[0]);
+                $("#hdnsActionType").val(_actionType.split("~")[1]);
+                $("#hdnActionName").val(_actionName);
+                if ('@Model.RoleName' == "OIC UNIT") {
+                    Swal.fire({
+                        icon: 'success',
+                        text: 'Are You Sure, You Want to Submit it to DEO',
+                        type: "success",
+                        showDenyButton: true,
+                        confirmButtonText: "Yes",
+                        denyButtonText: `No`
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+
+                        if (result.isConfirmed) {
+                            $("#btnSubmit").click();
+                        }
+                    });
+                }
+
+                else if ('@Model.RoleName' == "DEO_APPROVER") {
+                    Swal.fire({
+                        icon: 'success',
+                        text: 'Are You Sure, You Want to Approve',
+                        type: "success",
+                        showDenyButton: true,
+                        confirmButtonText: "Yes",
+                        denyButtonText: `No`
+                    }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+
+                        if (result.isConfirmed) {
+                            $("#btnSubmit").click();
+                        }
+                    });
+                }
+                else {
+                    $("#btnSubmit").click();
+
+                }
+
+
+            }
+            if (bFalse == false) {
+
+                event.preventDefault();
+                // window.location.href = '/Inbox/WFInbox';
+                return false;
+            }
+        }
+        else {
+            alertBox('Warning!', "Please Select Action", 'warning', 'error');
+            return false;
+        }
+    }
+
+    function SaveFeeJson() {
+
+
+        var JsonDetails = "";
+        var isValid = true;
+        var arr = [];
+        $('#grdFee tbody tr').each(function (index, row) {
+            var rowId = $(row).find('td:first-child').text(); // Assuming the first column contains the slno
+
+
+            // Initialize a new object for the row data
+            if (rowId == "No data available in table" || rowId == "") {
+                data = 0;
+            }
+            else {
+                var Details = {
+                    'slno': rowId,
+
+                    'FeeTypeId': $('#' + 'FeeTypeId_' + rowId).text(),
+                    'FeeType': $('#' + 'FeeType_' + rowId).text(),
+                    'LateFeeGRN': $('#' + 'LateFeeGRN_' + rowId).text(),
+                    'LateFeeGRNDate': $('#' + 'LateFeeGRNDate_' + rowId).text(),
+                    'LateFeeUploadChalan': $('#' + 'LateFeeUploadChalan_' + rowId).text(),
+                    'LateFeeDepositedAmount': $('#' + 'LateFeeDepositedAmount_' + rowId).text(),
+
+                };
+                arr.push(Details);
+            }
+
+        });
+        JsonDetails += JSON.stringify(arr);
+        $('#hdnJsonFee').val(JsonDetails);
+
+        if (isValid && $('#hdnJsonFee').val() !== "" && $('#hdnJsonFee').val() !== "[]") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function SaveCTOJson() {
+
+
+        var JsonDetails = "";
+        var isValid = true;
+        var arr = [];
+        $('#grdCTO tbody tr').each(function (index, row) {
+            var rowId = $(row).find('td:first-child').text(); // Assuming the first column contains the slno
+
+            if (rowId == "No data available in table" || rowId == "") {
+                data = 0;
+            }
+            else {
+                var Details = {
+                    'slno': rowId,
+
+                    'ProductionTypeName': $('#' + 'CTO_ProductionTypeName_' + rowId).text(),
+                    'ProductGroupId': $('#' + 'CTO_ProductGroupId_' + rowId).text(),
+                    'ProductGroupName': $('#' + 'CTO_ProductGroupName_' + rowId).text(),
+                    'ProductionClInBl': $('#' + 'CTO_ProductionClInBl_' + rowId).text(),
+                    'ProductionImflAndClInBl': $('#' + 'CTO_ProductionImflAndClInBl_' + rowId).text(),
+                    'IssueDate': $('#' + 'CTO_IssueDate_' + rowId).text(),
+                    'ValidFrom': $('#' + 'CTO_ValidFrom_' + rowId).text(),
+                    'ValidUpto': $('#' + 'CTO_ValidUpto_' + rowId).text(),
+
+                };
+                arr.push(Details);
+            }
+            // // Validate each field in the current row
+            // for (var key in mediclDetails) {
+            //     if (mediclDetails.hasOwnProperty(key) && mediclDetails[key] === "") {
+            //         alert("Please fill in all fields in row " + rowId);
+            //         isValid = false;
+            //         break; // Break out of the loop if any field is empty
+            //     }
+            // }
+
+
+        });
+        JsonDetails += JSON.stringify(arr);
+        $('#hdnJsonCTO').val(JsonDetails);
+
+        if (isValid && $('#hdnJsonCTO').val() !== "" && $('#hdnJsonCTO').val() !== "[]") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    function SaveProductionCapacityJson() {
+
+
+        var JsonDetails = "";
+        var isValid = true;
+        var arr = [];
+        $('#grdProductionCapacity tbody tr').each(function (index, row) {
+            var rowId = $(row).find('td:first-child').text(); // Assuming the first column contains the slno
+            if (rowId == "No data available in table" || rowId == "") {
+                data = 0;
+            }
+            else {
+                var Details = {
+                    'slno': rowId,
+
+                    'ProductionTypeName': $('#' + 'ProductionCapacity_ProductionTypeName_' + rowId).text(),
+                    'ProductGroupId': $('#' + 'ProductionCapacity_ProductGroupId_' + rowId).text(),
+                    'ProductGroupName': $('#' + 'ProductionCapacity_ProductGroupName_' + rowId).text(),
+                    'ProductionClInBl': $('#' + 'ProductionCapacity_ProductionClInBl_' + rowId).text(),
+                    'ProductionImflAndClInBl': $('#' + 'ProductionCapacity_ProductionImflAndClInBl_' + rowId).text(),
+
+                };
+
+                arr.push(Details);
+            }
+            // // Validate each field in the current row
+            // for (var key in mediclDetails) {
+            //     if (mediclDetails.hasOwnProperty(key) && mediclDetails[key] === "") {
+            //         alert("Please fill in all fields in row " + rowId);
+            //         isValid = false;
+            //         break; // Break out of the loop if any field is empty
+            //     }
+            // }
+
+        });
+        JsonDetails += JSON.stringify(arr);
+
+        $('#hdnJsonProductCapacity').val(JsonDetails);
+
+        if (isValid && $('#hdnJsonProductCapacity').val() !== "" && $('#hdnJsonProductCapacity').val() !== "[]") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
+
+    function SaveStockBLJson() {
+
+
+        var JsonDetails = "";
+        var isValid = true;
+        var arr = [];
+        $('#grdStockBL tbody tr').each(function (index, row) {
+            var rowId = $(row).find('td:first-child').text(); // Assuming the first column contains the slno
+            if (rowId == "No data available in table" || rowId == "") {
+                data = 0;
+            }
+            else {
+                var Details = {
+                    'slno': rowId,
+
+                    'BLProductGroupId': $('#' + 'BLProductGroupId_' + rowId).text(),
+                    'BLProductGroup': $('#' + 'BLProductGroup_' + rowId).text(),
+                    'spiritprod': $('#' + 'spiritprod_' + rowId).text(),
+                    'txtspiritimport': $('#' + 'txtspiritimport_' + rowId).text(),
+                    'txtspiritexport': $('#' + 'txtspiritexport_' + rowId).text(),
+                    'txtdispatched': $('#' + 'txtdispatched_' + rowId).text(),
+                    'txtspiritclosing': $('#' + 'txtspiritclosing_' + rowId).text(),
+
+                };
+                arr.push(Details);
+            }
+            // // Validate each field in the current row
+            // for (var key in mediclDetails) {
+            //     if (mediclDetails.hasOwnProperty(key) && mediclDetails[key] === "") {
+            //         alert("Please fill in all fields in row " + rowId);
+            //         isValid = false;
+            //         break; // Break out of the loop if any field is empty
+            //     }
+            // }
+
+
+        });
+        JsonDetails += JSON.stringify(arr);
+        $('#hdnJsonStockBL').val(JsonDetails);
+
+        if (isValid && $('#hdnJsonStockBL').val() !== "" && $('#hdnJsonStockBL').val() !== "[]") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    function GetSelectedCheckBoxList() {
+        //manufacturingUnitModel_CheckBoxItems_4__Selected
+
+        var arr = [];
+        var JsonDetails = "";
+        var count = '@Model.manufacturingUnitModel.CheckBoxItems.Count()';
+        for (var i = 1; i <= count; i++) {
+
+            var isChecked = $('#check_' + i).is(":checked");
+            if (isChecked) {
+                var Details = {
+                    'slno': $('#manufacturingUnitModel_CheckBoxItems_' + i + '__Value').val(),
+
+                };
+                arr.push(Details);
+            }
+
+        }
+        
+        JsonDetails += JSON.stringify(arr);
+        $('#hdnJsonCheckBox').val(JsonDetails);
+        if ($('#hdnJsonCheckBox').val() !== "" && $('#hdnJsonCheckBox').val() !== "[]") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+</script>
+
+@* @if (@ViewBag.ddlfinanceYear != null)
+{
+<script type="text/javascript">
+    $(function () {
+            $("#ddlfinyr").val("@ViewBag.ddlfinanceYear").selected();
+    });
+</script>
+} *@
+
+<script>
+    $(document).ready(function () {
+        $("#ddlfinyr").change(function () {
+            var ddtext = $("#ddlfinyr option:selected").val();
+            $(".hdnFinYear").val(ddtext);
+
+        });
+
+
+
+    })
+</script>
+<script>
+    $(document).ready(function () {
+
+        // $('.unit-type-radio').on('click', function () {
+        //
+        //     var rolename = @Model.licenseeIssuredUnit.LicenseeTypeId;
+        //     var selectedUnitType = $('input[name="manufacturingUnitModel.UnitTypeName"]:checked').val();
+        //     var finYear = $('#licenseeIssuredUnit_FinanceYear').val();
+        //     $.ajax({
+        //         url: '/ManufactureUnitRenewal/ManufactureUnitRenewal/GetUnitName',
+        //         type: 'POST',
+        //         data: { unitname: selectedUnitType, rolename: rolename, finYear: finYear },
+        //         success: function (data) {
+        //             console.log(data);
+        //             ;
+        //             $("#ddlManufacturUnit").html('')
+        //             var s = '';
+        //             var len = data.data.length;
+        //             for (var i = 0; i < len; i++) {
+        //                 s += "<option value='" + data.data[i]["Value"] + "'>" + data.data[i]["Text"] + "</option>";
+        //             }
+        //             $('#ddlManufacturUnit').html(s).trigger("chosen:updated");
+        //         },
+        //         error: function (error) {
+
+        //             console.error(error);
+        //         }
+        //     });
+        // });
+
+
+
+
+
+
+    });
+
+    function GetUnitList() {
+
+        var rolename = @Model.licenseeIssuredUnit.LicenseeTypeId;
+        var selectedUnitType = $('input[name="manufacturingUnitModel.UnitTypeName"]:checked').val();
+        var finYear = $('#licenseeIssuredUnit_FinanceYear').val();
+
+        if (selectedUnitType != "" && selectedUnitType != undefined && finYear != "" && finYear != undefined && finYear != "0") {
+
+            $.ajax({
+                url: '/ManufactureUnitRenewal/ManufactureUnitRenewal/GetUnitName',
+                type: 'POST',
+                data: { unitname: selectedUnitType, rolename: rolename, finYear: finYear },
+                success: function (data) {
+                    console.log(data);
+                    ;
+                    $("#ddlManufacturUnit").html('')
+                    var s = '';
+                    var len = data.data.length;
+                    for (var i = 0; i < len; i++) {
+                        s += "<option value='" + data.data[i]["Value"] + "'>" + data.data[i]["Text"] + "</option>";
+                    }
+                    $('#ddlManufacturUnit').html(s).trigger("chosen:updated");
+                },
+                error: function (error) {
+
+                    console.error(error);
+                }
+            });
+        }
+
+    }
+
+    function getDeoDetail() {
+
+        var rolename = @Model.licenseeIssuredUnit.LicenseeTypeId;
+        var selectedUnitType = $('input[name="manufacturingUnitModel.UnitTypeName"]:checked').val();
+        var selectedUnit = $('#ddlManufacturUnit').val();
+
+        $.ajax({
+            url: '/ManufactureUnitRenewal/ManufactureUnitRenewal/GetDeoDetail',
+            type: 'POST',
+            data: { unitname: selectedUnitType, rolename: rolename, selectedUnit: selectedUnit },
+            success: function (data) {
+
+
+                $('#hdnLocationCode').val(data[0].Value);
+                $('#ddlManufacturUnitAddress').val(data[1].Value);
+            },
+            error: function (error) {
+
+                console.error(error);
+            }
+        });
+    }
+    // document.getElementById('ddlManufacturUnit').addEventListener('change', function () {
+    //     var selectedValue = this.value;
+    //     document.getElementById('hiddenRequestModel').value = selectedValue;
+    //     document.getElementById('hidenroleName').value = @Model.licenseeIssuredUnit.LicenseeTypeId;
+    //     document.getElementById('hdnunitName').value = $('input[name="manufacturingUnitModel.UnitTypeName"]:checked').val();
+    //     document.getElementById('hdnMainUnit').value = @Model.manufacturingUnitModel.MainUnitNameId;
+    //     document.getElementById('hiddenForm').submit();
+    // });
+
+</script>
+
+@if (Model.ResponseModel == 2)
+{
+    <script type="text/javascript">
+        @*  $(document).ready(function ()  *@
+
+            Swal.fire({
+                icon: 'success',
+                text: '@Model.Message',
+                type: "success"
+            }).then(function () {
+                window.location.href = "../ManufactureUnitRenewal/ManufactureUnitRenewalView"
+            });
+
+    </script>
+}
+
+
+<script type="text/javascript">
+
+    function getclprodstock() {
+        var Closing = 0;
+        var Dispatch = 0;
+        if ($('#txtclprod').val() == "") {
+            $('#txtclprod').val("0");
+
+        }
+
+        if ($('#txtcldispatch').val() == "") {
+            $('#txtcldispatch').val("0");
+
+        }
+
+        var Prod = $('#txtclprod').val();
+
+        Dispatch = $('#txtcldispatch').val();
+
+        if ((parseInt(Dispatch)) > (parseInt(Prod))) {
+            $('#txtcldispatch').val("0");
+            Dispatch = $('#txtcldispatch').val();
+            Dispatch = (parseInt(Prod)) - (parseInt(Dispatch));
+            $('#txtcldispatch').focus();
+
+        }
+        else {
+            Closing = (parseInt(Prod)) - (parseInt(Dispatch));
+        }
+
+
+        $('#txtclclosing').val(Closing);
+
+    }
+
+</script>
+<script type="text/javascript">
+
+    function getimfprodstock() {
+        var Closing = 0;
+        var Dispatch = 0;
+        if ($('#txtimfprod').val() == "") {
+            $('#txtimfprod').val("0");
+
+        }
+
+        if ($('#txtimfdispatch').val() == "") {
+            $('#txtimfdispatch').val("0");
+
+        }
+
+        var Prod = $('#txtimfprod').val();
+
+        Dispatch = $('#txtimfdispatch').val();
+
+        if ((parseInt(Dispatch)) > (parseInt(Prod))) {
+            $('#txtimfdispatch').val("0");
+            Dispatch = $('#txtimfdispatch').val();
+            Dispatch = (parseInt(Prod)) - (parseInt(Dispatch));
+            $('#txtimfdispatch').focus();
+
+        }
+        else {
+            Closing = (parseInt(Prod)) - (parseInt(Dispatch));
+        }
+
+        $('#txtimfclosing').val(Closing);
+
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function getprodstock() {
+        var Closing = 0;
+        var Export = 0;
+        if ($('#txtspiritprod').val() == "") {
+            $('#txtspiritprod').val("0");
+
+        }
+
+        if ($('#txtspiritimport').val() == "") {
+            $('#txtspiritimport').val("0");
+
+        }
+
+
+        if ($('#txtspiritexport').val() == "") {
+            $('#txtspiritexport').val("0");
+
+        }
+        if ($('#txtdispatched').val() == "") {
+            $('#txtdispatched').val("0");
+
+        }
+        var Prod = $('#txtspiritprod').val();
+
+
+        var Imp = $('#txtspiritimport').val();
+
+        Export = $('#txtspiritexport').val();
+        var dispatched = $('#txtdispatched').val();
+
+        if ((parseInt(Export) + parseInt(dispatched)) > (parseInt(Prod) + parseInt(Imp))) {
+            $('#txtspiritexport').val("0");
+            Export = $('#txtspiritexport').val();
+            Closing = (parseInt(Prod)) + (parseInt(Imp)) - (parseInt(Export)) - parseInt(dispatched);
+            $('#txtspiritexport').focus();
+
+        }
+        else {
+            Closing = (parseInt(Prod)) + (parseInt(Imp)) - (parseInt(Export)) - parseInt(dispatched);
+        }
+
+
+        $('#txtspiritclosing').val(Closing);
+
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function gettotal() {
+        if ($('#txtbotlfee').val() == "") {
+            $('#txtbotlfee').val("0");
+
+        }
+        if ($('#txtexportfee').val() == "") {
+            $('#txtexportfee').val("0");
+
+        }
+        if ($('#txtimportfee').val() == "") {
+            $('#txtimportfee').val("0");
+
+        }
+        if ($('#txtotherfee').val() == "") {
+            $('#txtotherfee').val("0");
+        }
+        var Botlfee = $('#txtbotlfee').val();
+        var Exportfee = $('#txtexportfee').val();
+        var Importfee = $('#txtimportfee').val();
+        var Otherfee = $('#txtotherfee').val();
+        var Total = (parseInt(Botlfee) + parseInt(Exportfee) + parseInt(Importfee) + parseInt(Otherfee));
+        $('#txttotalfee').val(Total);
+
+    }
+</script>
+
+
+@if (Model.ResponseModel == 3)
+{
+    <script type="text/javascript">
+
+        Swal.fire({
+            icon: 'success',
+            text: '@Model.Message',
+            type: "success"
+        }).then(function () {
+            window.location.href = "../ManufactureUnitRenewal/ManufactureUnitRenewal"
+        });
+
+    </script>
+}
+
+
+
+
+
+
+
+
